@@ -41,9 +41,13 @@
             btnMinute3 = new Button();
             label4 = new Label();
             panel2 = new Panel();
-            textBox2 = new TextBox();
+            txtArtist = new TextBox();
+            label8 = new Label();
+            txtTitle = new TextBox();
+            label7 = new Label();
+            txtFolder = new TextBox();
             label9 = new Label();
-            button2 = new Button();
+            btnWriteFile = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -129,7 +133,7 @@
             panel1.Controls.Add(label5);
             panel1.Controls.Add(btnMinute3);
             panel1.Controls.Add(label4);
-            panel1.Location = new Point(916, 284);
+            panel1.Location = new Point(917, 398);
             panel1.Name = "panel1";
             panel1.Size = new Size(200, 146);
             panel1.TabIndex = 6;
@@ -144,8 +148,7 @@
             txtSeconds.Size = new Size(33, 29);
             txtSeconds.TabIndex = 10;
             txtSeconds.TextAlign = HorizontalAlignment.Center;
-            txtSeconds.KeyDown += txtSeconds_KeyDown;
-            txtSeconds.KeyUp += txtSeconds_KeyUp;
+            txtSeconds.KeyDown += txtSeconds_UpDown;
             // 
             // label6
             // 
@@ -225,23 +228,67 @@
             // 
             panel2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             panel2.BorderStyle = BorderStyle.Fixed3D;
-            panel2.Controls.Add(textBox2);
+            panel2.Controls.Add(txtArtist);
+            panel2.Controls.Add(label8);
+            panel2.Controls.Add(txtTitle);
+            panel2.Controls.Add(label7);
+            panel2.Controls.Add(txtFolder);
             panel2.Controls.Add(label9);
             panel2.Location = new Point(916, 191);
             panel2.Name = "panel2";
-            panel2.Size = new Size(200, 85);
+            panel2.Size = new Size(200, 201);
             panel2.TabIndex = 11;
             // 
-            // textBox2
+            // txtArtist
             // 
-            textBox2.Font = new Font("Segoe UI", 12F);
-            textBox2.Location = new Point(13, 35);
-            textBox2.MaxLength = 444;
-            textBox2.Name = "textBox2";
-            textBox2.PlaceholderText = "3";
-            textBox2.Size = new Size(171, 29);
-            textBox2.TabIndex = 8;
-            textBox2.Text = "G:\\My Drive\\musician\\LivePrompter2";
+            txtArtist.Font = new Font("Segoe UI", 10F);
+            txtArtist.Location = new Point(13, 155);
+            txtArtist.MaxLength = 444;
+            txtArtist.Name = "txtArtist";
+            txtArtist.PlaceholderText = "artist/band";
+            txtArtist.Size = new Size(171, 25);
+            txtArtist.TabIndex = 12;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI", 12F);
+            label8.Location = new Point(12, 131);
+            label8.Name = "label8";
+            label8.Size = new Size(47, 21);
+            label8.TabIndex = 11;
+            label8.Text = "Artist";
+            // 
+            // txtTitle
+            // 
+            txtTitle.Font = new Font("Segoe UI", 10F);
+            txtTitle.Location = new Point(13, 95);
+            txtTitle.MaxLength = 444;
+            txtTitle.Name = "txtTitle";
+            txtTitle.PlaceholderText = "song title";
+            txtTitle.Size = new Size(171, 25);
+            txtTitle.TabIndex = 10;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 12F);
+            label7.Location = new Point(12, 71);
+            label7.Name = "label7";
+            label7.Size = new Size(39, 21);
+            label7.TabIndex = 9;
+            label7.Text = "Title";
+            // 
+            // txtFolder
+            // 
+            txtFolder.Font = new Font("Segoe UI", 10F);
+            txtFolder.Location = new Point(13, 35);
+            txtFolder.MaxLength = 444;
+            txtFolder.Name = "txtFolder";
+            txtFolder.PlaceholderText = "3";
+            txtFolder.Size = new Size(171, 25);
+            txtFolder.TabIndex = 8;
+            txtFolder.Text = "G:\\My Drive\\musician\\LivePrompter2";
             // 
             // label9
             // 
@@ -253,23 +300,24 @@
             label9.TabIndex = 2;
             label9.Text = "Folder";
             // 
-            // button2
+            // btnWriteFile
             // 
-            button2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button2.Font = new Font("Segoe UI", 12F);
-            button2.Location = new Point(915, 146);
-            button2.Name = "button2";
-            button2.Size = new Size(201, 39);
-            button2.TabIndex = 12;
-            button2.Text = "&Write File";
-            button2.UseVisualStyleBackColor = true;
+            btnWriteFile.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnWriteFile.Font = new Font("Segoe UI", 12F);
+            btnWriteFile.Location = new Point(915, 146);
+            btnWriteFile.Name = "btnWriteFile";
+            btnWriteFile.Size = new Size(201, 39);
+            btnWriteFile.TabIndex = 12;
+            btnWriteFile.Text = "&Write File";
+            btnWriteFile.UseVisualStyleBackColor = true;
+            btnWriteFile.Click += btnWriteFile_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1129, 695);
-            Controls.Add(button2);
+            Controls.Add(btnWriteFile);
             Controls.Add(panel2);
             Controls.Add(panel1);
             Controls.Add(label3);
@@ -308,8 +356,12 @@
         private Label label6;
         private TextBox txtMinutes;
         private Panel panel2;
-        private TextBox textBox2;
+        private TextBox txtFolder;
         private Label label9;
-        private Button button2;
+        private Button btnWriteFile;
+        private TextBox txtTitle;
+        private Label label7;
+        private TextBox txtArtist;
+        private Label label8;
     }
 }

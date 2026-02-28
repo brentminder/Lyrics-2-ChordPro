@@ -70,14 +70,14 @@ namespace Lyrics_2_ChordPro
             if (string.IsNullOrWhiteSpace(originalLyrics))
                 return string.Empty;
 
-            var lines = originalLyrics.Split(
-                new[] { "\r\n", "\n", "\r" },
-                StringSplitOptions.None);
+            var lines = originalLyrics.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None);
 
             var formattedLines = new StringBuilder();
             var textInfo = CultureInfo.CurrentCulture.TextInfo;
 
-            formattedLines.AppendLine("{Duration:3:99}");
+            var minutes = txtMinutes.Text.Trim();
+            var seconds = txtSeconds.Text.Trim();
+            formattedLines.AppendLine("{Duration:" + minutes + ":" + seconds + "}");
 
             Func<string, bool> isSectionLine = value =>
                 value.StartsWith("intro", StringComparison.OrdinalIgnoreCase) ||
@@ -102,6 +102,28 @@ namespace Lyrics_2_ChordPro
             foreach (var line in lines) {
                 var trimmedLine = line.Trim();
 
+                //parse title and artist from the header
+                //eg: Lyrics of down by the water by liz phair
+                if (trimmedLine.StartsWith("lyrics of ", StringComparison.OrdinalIgnoreCase) &&
+                    !isSectionLine(trimmedLine)) {
+                    const string lyricsOf = "lyrics of ";
+                    var metadata = trimmedLine[lyricsOf.Length..].Trim();
+                    var byIndex = metadata.LastIndexOf(" by ", StringComparison.OrdinalIgnoreCase);
+
+                    if (byIndex > 0) {
+                        var title = metadata[..byIndex].Trim();
+                        var artist = metadata[(byIndex + 4)..].Trim();
+
+                        if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(artist)) {
+                            formattedLines.AppendLine("{title:" + title + "}");
+                            formattedLines.AppendLine("{artist:" + artist + "}");
+                            txtTitle.Text = title;
+                            txtArtist.Text = artist;
+                            continue;
+                        }
+                    }
+                }
+
                 if (isSectionLine(trimmedLine))
                     appendTitleCased(trimmedLine);
                 else
@@ -123,34 +145,50 @@ namespace Lyrics_2_ChordPro
             txtMinutes.Text = "5";
         }
 
-        private void txtSeconds_KeyDown(object sender, KeyEventArgs e) {
+        private void txtSeconds_UpDown(object sender, KeyEventArgs e) {
             if (!int.TryParse(txtSeconds.Text, out var seconds))
                 seconds = 0;
 
-            if (e.KeyCode == Keys.Up) {
-                seconds = Math.Min(59, seconds + 10);
-                txtSeconds.Text = seconds.ToString("00");
-                txtSeconds.SelectionStart = txtSeconds.TextLength;
-                e.SuppressKeyPress = true;
-                e.Handled = true;
+            var newValue = e.KeyCode switch {
+                Keys.Up => Math.Min(59, seconds + 10),
+                Keys.Down => Math.Max(0, seconds - 1),
+                _ => (int?)null
+            };
+
+            if (!newValue.HasValue)
                 return;
-            }
 
-            if (e.KeyCode == Keys.Down) {
-                seconds = Math.Max(0, seconds - 1);
-                txtSeconds.Text = seconds.ToString("00");
-                txtSeconds.SelectionStart = txtSeconds.TextLength;
-                e.SuppressKeyPress = true;
-                e.Handled = true;
-            }
-        }
-
-        private void txtSeconds_KeyUp(object sender, KeyEventArgs e) {
-
+            txtSeconds.Text = newValue.Value.ToString("00");
+            txtSeconds.SelectionStart = txtSeconds.TextLength;
+            e.SuppressKeyPress = true;
+            e.Handled = true;
         }
 
         private void btnRefresh_Click(object sender, EventArgs e) {
             RefreshLyrics();
+        }
+
+        private void btnWriteFile_Click(object sender, EventArgs e) {
+            var filename = txtTitle.Text + " - " + txtArtist.Text + ".txt";
+            var path = Path.Combine(txtFolder.Text, filename);
+            if (File.Exists(path))  {
+                var result = MessageBox.Show(
+                    $"The file '{filename}' already exists. Overwrite it?",
+                    "File Exists",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button1);
+                if (result != DialogResult.OK)
+                    return;
+            }   
+
+            try {
+                File.WriteAllText(path, txtFormattedLyrics.Text);
+                MessageBox.Show($"File '{filename}' has been written successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex) {
+                MessageBox.Show($"An error occurred while writing the file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
