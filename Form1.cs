@@ -171,7 +171,7 @@ namespace Lyrics_2_ChordPro
         private void btnWriteFile_Click(object sender, EventArgs e) {
             var filename = txtTitle.Text + " - " + txtArtist.Text + ".txt";
             var path = Path.Combine(txtFolder.Text, filename);
-            if (File.Exists(path))  {
+            if (File.Exists(path)) {
                 var result = MessageBox.Show(
                     $"The file '{filename}' already exists. Overwrite it?",
                     "File Exists",
@@ -180,7 +180,7 @@ namespace Lyrics_2_ChordPro
                     MessageBoxDefaultButton.Button1);
                 if (result != DialogResult.OK)
                     return;
-            }   
+            }
 
             try {
                 File.WriteAllText(path, txtFormattedLyrics.Text);
@@ -189,6 +189,14 @@ namespace Lyrics_2_ChordPro
             catch (Exception ex) {
                 MessageBox.Show($"An error occurred while writing the file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void btnPaste_Click(object sender, EventArgs e) {
+            txtOriginalLyrics.Text = Clipboard.GetText();
+        }
+
+        private void btnCopy_Click(object sender, EventArgs e) {
+            Clipboard.SetText(txtArtist.Text + " - " + txtTitle.Text);
         }
     }
 }

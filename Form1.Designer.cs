@@ -48,6 +48,8 @@
             txtFolder = new TextBox();
             label9 = new Label();
             btnWriteFile = new Button();
+            btnPaste = new Button();
+            btnCopy = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -91,6 +93,7 @@
             // btnRefresh
             // 
             btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnRefresh.Cursor = Cursors.Hand;
             btnRefresh.Font = new Font("Segoe UI", 12F);
             btnRefresh.Location = new Point(916, 103);
             btnRefresh.Name = "btnRefresh";
@@ -173,6 +176,7 @@
             // 
             // btnMinute5
             // 
+            btnMinute5.Cursor = Cursors.Hand;
             btnMinute5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnMinute5.Location = new Point(91, 99);
             btnMinute5.Name = "btnMinute5";
@@ -184,6 +188,7 @@
             // 
             // btnMinute4
             // 
+            btnMinute4.Cursor = Cursors.Hand;
             btnMinute4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnMinute4.Location = new Point(91, 70);
             btnMinute4.Name = "btnMinute4";
@@ -205,6 +210,7 @@
             // 
             // btnMinute3
             // 
+            btnMinute3.Cursor = Cursors.Hand;
             btnMinute3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnMinute3.Location = new Point(91, 42);
             btnMinute3.Name = "btnMinute3";
@@ -228,6 +234,7 @@
             // 
             panel2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             panel2.BorderStyle = BorderStyle.Fixed3D;
+            panel2.Controls.Add(btnCopy);
             panel2.Controls.Add(txtArtist);
             panel2.Controls.Add(label8);
             panel2.Controls.Add(txtTitle);
@@ -303,6 +310,7 @@
             // btnWriteFile
             // 
             btnWriteFile.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnWriteFile.Cursor = Cursors.Hand;
             btnWriteFile.Font = new Font("Segoe UI", 12F);
             btnWriteFile.Location = new Point(915, 146);
             btnWriteFile.Name = "btnWriteFile";
@@ -312,11 +320,35 @@
             btnWriteFile.UseVisualStyleBackColor = true;
             btnWriteFile.Click += btnWriteFile_Click;
             // 
+            // btnPaste
+            // 
+            btnPaste.Cursor = Cursors.Hand;
+            btnPaste.Location = new Point(264, 79);
+            btnPaste.Name = "btnPaste";
+            btnPaste.Size = new Size(72, 23);
+            btnPaste.TabIndex = 13;
+            btnPaste.Text = "&Paste";
+            btnPaste.UseVisualStyleBackColor = true;
+            btnPaste.Click += btnPaste_Click;
+            // 
+            // btnCopy
+            // 
+            btnCopy.Cursor = Cursors.Hand;
+            btnCopy.Font = new Font("Segoe UI", 8F);
+            btnCopy.Location = new Point(133, 71);
+            btnCopy.Name = "btnCopy";
+            btnCopy.Size = new Size(51, 21);
+            btnCopy.TabIndex = 14;
+            btnCopy.Text = "&Copy";
+            btnCopy.UseVisualStyleBackColor = true;
+            btnCopy.Click += btnCopy_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1129, 695);
+            Controls.Add(btnPaste);
             Controls.Add(btnWriteFile);
             Controls.Add(panel2);
             Controls.Add(panel1);
@@ -363,5 +395,7 @@
         private Label label7;
         private TextBox txtArtist;
         private Label label8;
+        private Button btnPaste;
+        private Button btnCopy;
     }
 }
