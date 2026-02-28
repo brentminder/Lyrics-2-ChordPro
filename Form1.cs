@@ -46,6 +46,10 @@ namespace Lyrics_2_ChordPro
         }
 
         private void txtOriginalLyrics_TextChanged(object sender, EventArgs e) {
+            RefreshLyrics();
+        }
+
+        private void RefreshLyrics() {
             if (_normalizingOriginalLyrics)
                 return;
 
@@ -105,6 +109,48 @@ namespace Lyrics_2_ChordPro
             }
 
             return formattedLines.ToString();
+        }
+
+        private void btnMinute3_Click(object sender, EventArgs e) {
+            txtMinutes.Text = "3";
+        }
+
+        private void btnMinute4_Click(object sender, EventArgs e) {
+            txtMinutes.Text = "4";
+        }
+
+        private void btnMinute5_Click(object sender, EventArgs e) {
+            txtMinutes.Text = "5";
+        }
+
+        private void txtSeconds_KeyDown(object sender, KeyEventArgs e) {
+            if (!int.TryParse(txtSeconds.Text, out var seconds))
+                seconds = 0;
+
+            if (e.KeyCode == Keys.Up) {
+                seconds = Math.Min(59, seconds + 10);
+                txtSeconds.Text = seconds.ToString("00");
+                txtSeconds.SelectionStart = txtSeconds.TextLength;
+                e.SuppressKeyPress = true;
+                e.Handled = true;
+                return;
+            }
+
+            if (e.KeyCode == Keys.Down) {
+                seconds = Math.Max(0, seconds - 1);
+                txtSeconds.Text = seconds.ToString("00");
+                txtSeconds.SelectionStart = txtSeconds.TextLength;
+                e.SuppressKeyPress = true;
+                e.Handled = true;
+            }
+        }
+
+        private void txtSeconds_KeyUp(object sender, KeyEventArgs e) {
+
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e) {
+            RefreshLyrics();
         }
     }
 }
