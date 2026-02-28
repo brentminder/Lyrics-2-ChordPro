@@ -41,6 +41,7 @@
             btnMinute3 = new Button();
             label4 = new Label();
             panel2 = new Panel();
+            btnCopy = new Button();
             txtArtist = new TextBox();
             label8 = new Label();
             txtTitle = new TextBox();
@@ -49,7 +50,6 @@
             label9 = new Label();
             btnWriteFile = new Button();
             btnPaste = new Button();
-            btnCopy = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -169,9 +169,9 @@
             txtMinutes.Location = new Point(91, 9);
             txtMinutes.MaxLength = 2;
             txtMinutes.Name = "txtMinutes";
-            txtMinutes.PlaceholderText = "3";
             txtMinutes.Size = new Size(27, 29);
             txtMinutes.TabIndex = 8;
+            txtMinutes.Text = "3";
             txtMinutes.TextAlign = HorizontalAlignment.Right;
             // 
             // btnMinute5
@@ -245,6 +245,18 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(200, 201);
             panel2.TabIndex = 11;
+            // 
+            // btnCopy
+            // 
+            btnCopy.Cursor = Cursors.Hand;
+            btnCopy.Font = new Font("Segoe UI", 8F);
+            btnCopy.Location = new Point(133, 71);
+            btnCopy.Name = "btnCopy";
+            btnCopy.Size = new Size(51, 21);
+            btnCopy.TabIndex = 14;
+            btnCopy.Text = "&Copy";
+            btnCopy.UseVisualStyleBackColor = true;
+            btnCopy.Click += btnCopy_Click;
             // 
             // txtArtist
             // 
@@ -330,18 +342,6 @@
             btnPaste.Text = "&Paste";
             btnPaste.UseVisualStyleBackColor = true;
             btnPaste.Click += btnPaste_Click;
-            // 
-            // btnCopy
-            // 
-            btnCopy.Cursor = Cursors.Hand;
-            btnCopy.Font = new Font("Segoe UI", 8F);
-            btnCopy.Location = new Point(133, 71);
-            btnCopy.Name = "btnCopy";
-            btnCopy.Size = new Size(51, 21);
-            btnCopy.TabIndex = 14;
-            btnCopy.Text = "&Copy";
-            btnCopy.UseVisualStyleBackColor = true;
-            btnCopy.Click += btnCopy_Click;
             // 
             // Form1
             // 

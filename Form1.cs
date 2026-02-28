@@ -196,7 +196,7 @@ namespace Lyrics_2_ChordPro
         }
 
         private void btnCopy_Click(object sender, EventArgs e) {
-            Clipboard.SetText(txtArtist.Text + " - " + txtTitle.Text);
+            Clipboard.SetText(txtTitle.Text + " - " + txtArtist.Text);
         }
     }
 }
