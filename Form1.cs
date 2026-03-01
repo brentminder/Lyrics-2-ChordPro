@@ -1,5 +1,7 @@
 using System.Globalization;
 using System.Text;
+using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace Lyrics_2_ChordPro
 {
@@ -9,7 +11,41 @@ namespace Lyrics_2_ChordPro
 
         public Form1() {
             InitializeComponent();
+            // assign a musical-note icon generated at runtime
+            this.Icon = CreateNoteIcon();
+
             txtOriginalLyrics.KeyDown += txtOriginalLyrics_KeyDown;
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool DestroyIcon(IntPtr hIcon);
+
+        private Icon CreateNoteIcon()
+        {
+            const int size = 32;
+            using var bmp = new Bitmap(size, size);
+            using (var g = Graphics.FromImage(bmp))
+            {
+                g.Clear(Color.Transparent);
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+                using var font = new Font("Segoe UI Symbol", 20, FontStyle.Regular, GraphicsUnit.Pixel);
+                var note = "\u266B"; // beamed eighth notes
+                var layout = g.MeasureString(note, font);
+                g.DrawString(note, font, Brushes.Black, (size - layout.Width) / 2f, (size - layout.Height) / 2f);
+            }
+
+            var hIcon = bmp.GetHicon();
+            try
+            {
+                using var iconFromHandle = Icon.FromHandle(hIcon);
+                var clone = (Icon)iconFromHandle.Clone();
+                return clone;
+            }
+            finally
+            {
+                // release the original handle
+                DestroyIcon(hIcon);
+            }
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e) {
