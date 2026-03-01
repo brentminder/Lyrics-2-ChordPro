@@ -134,7 +134,7 @@ namespace Lyrics_2_ChordPro
         }
 
         private void btnMinute3_Click(object sender, EventArgs e) {
-            txtMinutes.Text = "3";
+            txtMinutes.Text = "2";
         }
 
         private void btnMinute4_Click(object sender, EventArgs e) {

@@ -24,7 +24,8 @@
         ///  Required method for Designer support - do not modify
         ///  the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             label1 = new Label();
             label2 = new Label();
             txtOriginalLyrics = new TextBox();
@@ -38,7 +39,7 @@
             btnMinute5 = new Button();
             btnMinute4 = new Button();
             label5 = new Label();
-            btnMinute3 = new Button();
+            btnMinute2 = new Button();
             label4 = new Label();
             panel2 = new Panel();
             btnCopy = new Button();
@@ -134,7 +135,7 @@
             panel1.Controls.Add(btnMinute5);
             panel1.Controls.Add(btnMinute4);
             panel1.Controls.Add(label5);
-            panel1.Controls.Add(btnMinute3);
+            panel1.Controls.Add(btnMinute2);
             panel1.Controls.Add(label4);
             panel1.Location = new Point(917, 398);
             panel1.Name = "panel1";
@@ -208,17 +209,17 @@
             label5.TabIndex = 4;
             label5.Text = "Minute:";
             // 
-            // btnMinute3
+            // btnMinute2
             // 
-            btnMinute3.Cursor = Cursors.Hand;
-            btnMinute3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnMinute3.Location = new Point(91, 42);
-            btnMinute3.Name = "btnMinute3";
-            btnMinute3.Size = new Size(27, 29);
-            btnMinute3.TabIndex = 3;
-            btnMinute3.Text = "3";
-            btnMinute3.UseVisualStyleBackColor = true;
-            btnMinute3.Click += btnMinute3_Click;
+            btnMinute2.Cursor = Cursors.Hand;
+            btnMinute2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnMinute2.Location = new Point(91, 42);
+            btnMinute2.Name = "btnMinute2";
+            btnMinute2.Size = new Size(27, 29);
+            btnMinute2.TabIndex = 3;
+            btnMinute2.Text = "2";
+            btnMinute2.UseVisualStyleBackColor = true;
+            btnMinute2.Click += btnMinute3_Click;
             // 
             // label4
             // 
@@ -380,7 +381,7 @@
         private Label label3;
         private Panel panel1;
         private Label label4;
-        private Button btnMinute3;
+        private Button btnMinute2;
         private Button btnMinute5;
         private Button btnMinute4;
         private Label label5;
