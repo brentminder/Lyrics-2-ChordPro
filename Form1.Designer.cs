@@ -33,6 +33,7 @@
             txtFormattedLyrics = new TextBox();
             label3 = new Label();
             panel1 = new Panel();
+            btnMinute3 = new Button();
             txtSeconds = new TextBox();
             label6 = new Label();
             txtMinutes = new TextBox();
@@ -129,6 +130,7 @@
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(btnMinute3);
             panel1.Controls.Add(txtSeconds);
             panel1.Controls.Add(label6);
             panel1.Controls.Add(txtMinutes);
@@ -139,8 +141,20 @@
             panel1.Controls.Add(label4);
             panel1.Location = new Point(917, 398);
             panel1.Name = "panel1";
-            panel1.Size = new Size(200, 146);
+            panel1.Size = new Size(200, 116);
             panel1.TabIndex = 6;
+            // 
+            // btnMinute3
+            // 
+            btnMinute3.Cursor = Cursors.Hand;
+            btnMinute3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnMinute3.Location = new Point(58, 67);
+            btnMinute3.Name = "btnMinute3";
+            btnMinute3.Size = new Size(27, 29);
+            btnMinute3.TabIndex = 11;
+            btnMinute3.Text = "3";
+            btnMinute3.UseVisualStyleBackColor = true;
+            btnMinute3.Click += btnMinute3_Click;
             // 
             // txtSeconds
             // 
@@ -179,7 +193,7 @@
             // 
             btnMinute5.Cursor = Cursors.Hand;
             btnMinute5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnMinute5.Location = new Point(91, 99);
+            btnMinute5.Location = new Point(116, 67);
             btnMinute5.Name = "btnMinute5";
             btnMinute5.Size = new Size(27, 29);
             btnMinute5.TabIndex = 6;
@@ -191,7 +205,7 @@
             // 
             btnMinute4.Cursor = Cursors.Hand;
             btnMinute4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnMinute4.Location = new Point(91, 70);
+            btnMinute4.Location = new Point(87, 67);
             btnMinute4.Name = "btnMinute4";
             btnMinute4.Size = new Size(27, 29);
             btnMinute4.TabIndex = 5;
@@ -203,7 +217,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 10F);
-            label5.Location = new Point(27, 75);
+            label5.Location = new Point(27, 48);
             label5.Name = "label5";
             label5.Size = new Size(56, 19);
             label5.TabIndex = 4;
@@ -213,13 +227,13 @@
             // 
             btnMinute2.Cursor = Cursors.Hand;
             btnMinute2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnMinute2.Location = new Point(91, 42);
+            btnMinute2.Location = new Point(29, 67);
             btnMinute2.Name = "btnMinute2";
             btnMinute2.Size = new Size(27, 29);
             btnMinute2.TabIndex = 3;
             btnMinute2.Text = "2";
             btnMinute2.UseVisualStyleBackColor = true;
-            btnMinute2.Click += btnMinute3_Click;
+            btnMinute2.Click += btnMinute2_Click;
             // 
             // label4
             // 
@@ -398,5 +412,6 @@
         private Label label8;
         private Button btnPaste;
         private Button btnCopy;
+        private Button btnMinute3;
     }
 }

@@ -9,7 +9,8 @@ namespace Lyrics_2_ChordPro
     {
         private bool _normalizingOriginalLyrics;
 
-        public Form1() {
+        public Form1()
+        {
             InitializeComponent();
             // assign a musical-note icon generated at runtime
             this.Icon = CreateNoteIcon();
@@ -48,13 +49,16 @@ namespace Lyrics_2_ChordPro
             }
         }
 
-        private void Form1_KeyPress(object sender, KeyPressEventArgs e) {
-            if (e.KeyChar == 27) {
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 27)
+            {
                 this.Close();
             }
         }
 
-        private void txtOriginalLyrics_KeyDown(object sender, KeyEventArgs e) {
+        private void txtOriginalLyrics_KeyDown(object sender, KeyEventArgs e)
+        {
             var isPasteShortcut =
                 (e.Control && e.KeyCode == Keys.V) ||
                 (e.Shift && e.KeyCode == Keys.Insert);
@@ -71,7 +75,8 @@ namespace Lyrics_2_ChordPro
             e.Handled = true;
         }
 
-        private static string NormalizeNewLines(string text) {
+        private static string NormalizeNewLines(string text)
+        {
             return text
                 .Replace("\r\n", "\n")
                 .Replace("\r", "\n")
@@ -81,17 +86,20 @@ namespace Lyrics_2_ChordPro
                 .Replace("\n", Environment.NewLine);
         }
 
-        private void txtOriginalLyrics_TextChanged(object sender, EventArgs e) {
+        private void txtOriginalLyrics_TextChanged(object sender, EventArgs e)
+        {
             RefreshLyrics();
         }
 
-        private void RefreshLyrics() {
+        private void RefreshLyrics()
+        {
             if (_normalizingOriginalLyrics)
                 return;
 
             var normalizedOriginalLyrics = NormalizeNewLines(txtOriginalLyrics.Text);
 
-            if (!string.Equals(txtOriginalLyrics.Text, normalizedOriginalLyrics, StringComparison.Ordinal)) {
+            if (!string.Equals(txtOriginalLyrics.Text, normalizedOriginalLyrics, StringComparison.Ordinal))
+            {
                 var caret = txtOriginalLyrics.SelectionStart;
                 _normalizingOriginalLyrics = true;
                 txtOriginalLyrics.Text = normalizedOriginalLyrics;
@@ -102,7 +110,8 @@ namespace Lyrics_2_ChordPro
             txtFormattedLyrics.Text = FormatLyrics(normalizedOriginalLyrics);
         }
 
-        private string FormatLyrics(string originalLyrics) {
+        private string FormatLyrics(string originalLyrics)
+        {
             if (string.IsNullOrWhiteSpace(originalLyrics))
                 return string.Empty;
 
@@ -119,6 +128,7 @@ namespace Lyrics_2_ChordPro
                 value.StartsWith("intro", StringComparison.OrdinalIgnoreCase) ||
                 value.StartsWith("verse", StringComparison.OrdinalIgnoreCase) ||
                 value.StartsWith("bridge", StringComparison.OrdinalIgnoreCase) ||
+                value.StartsWith("hook", StringComparison.OrdinalIgnoreCase) ||
                 value.StartsWith("prechorus", StringComparison.OrdinalIgnoreCase) ||
                 value.StartsWith("pre-chorus", StringComparison.OrdinalIgnoreCase) ||
                 value.StartsWith("chorus", StringComparison.OrdinalIgnoreCase) ||
@@ -128,29 +138,34 @@ namespace Lyrics_2_ChordPro
                 value.StartsWith("guitar solo", StringComparison.OrdinalIgnoreCase) ||
                 value.StartsWith("outro", StringComparison.OrdinalIgnoreCase);
 
-            Action<string> appendTitleCased = value => {
+            Action<string> appendTitleCased = value =>
+            {
                 var normalized = value.Replace("prechorus", "pre-chorus", StringComparison.OrdinalIgnoreCase);
                 var titleCased = textInfo.ToTitleCase(normalized.ToLowerInvariant());
                 formattedLines.AppendLine();
                 formattedLines.AppendLine("{soc:" + titleCased + "}");
             };
 
-            foreach (var line in lines) {
+            foreach (var line in lines)
+            {
                 var trimmedLine = line.Trim();
 
                 //parse title and artist from the header
                 //eg: Lyrics of down by the water by liz phair
                 if (trimmedLine.StartsWith("lyrics of ", StringComparison.OrdinalIgnoreCase) &&
-                    !isSectionLine(trimmedLine)) {
+                    !isSectionLine(trimmedLine))
+                {
                     const string lyricsOf = "lyrics of ";
                     var metadata = trimmedLine[lyricsOf.Length..].Trim();
                     var byIndex = metadata.LastIndexOf(" by ", StringComparison.OrdinalIgnoreCase);
 
-                    if (byIndex > 0) {
+                    if (byIndex > 0)
+                    {
                         var title = metadata[..byIndex].Trim();
                         var artist = metadata[(byIndex + 4)..].Trim();
 
-                        if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(artist)) {
+                        if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(artist))
+                        {
                             formattedLines.AppendLine("{title:" + title + "}");
                             formattedLines.AppendLine("{artist:" + artist + "}");
                             txtTitle.Text = title;
@@ -169,23 +184,31 @@ namespace Lyrics_2_ChordPro
             return formattedLines.ToString();
         }
 
-        private void btnMinute3_Click(object sender, EventArgs e) {
+        private void btnMinute2_Click(object sender, EventArgs e)
+        {
             txtMinutes.Text = "2";
         }
-
-        private void btnMinute4_Click(object sender, EventArgs e) {
+        private void btnMinute3_Click(object sender, EventArgs e)
+        {
+            txtMinutes.Text = "3";
+        }
+        private void btnMinute4_Click(object sender, EventArgs e)
+        {
             txtMinutes.Text = "4";
         }
 
-        private void btnMinute5_Click(object sender, EventArgs e) {
+        private void btnMinute5_Click(object sender, EventArgs e)
+        {
             txtMinutes.Text = "5";
         }
 
-        private void txtSeconds_UpDown(object sender, KeyEventArgs e) {
+        private void txtSeconds_UpDown(object sender, KeyEventArgs e)
+        {
             if (!int.TryParse(txtSeconds.Text, out var seconds))
                 seconds = 0;
 
-            var newValue = e.KeyCode switch {
+            var newValue = e.KeyCode switch
+            {
                 Keys.Up => Math.Min(59, seconds + 10),
                 Keys.Down => Math.Max(0, seconds - 1),
                 _ => (int?)null
@@ -200,14 +223,17 @@ namespace Lyrics_2_ChordPro
             e.Handled = true;
         }
 
-        private void btnRefresh_Click(object sender, EventArgs e) {
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
             RefreshLyrics();
         }
 
-        private void btnWriteFile_Click(object sender, EventArgs e) {
+        private void btnWriteFile_Click(object sender, EventArgs e)
+        {
             var filename = txtTitle.Text + " - " + txtArtist.Text + ".txt";
             var path = Path.Combine(txtFolder.Text, filename);
-            if (File.Exists(path)) {
+            if (File.Exists(path))
+            {
                 var result = MessageBox.Show(
                     $"The file '{filename}' already exists. Overwrite it?",
                     "File Exists",
@@ -218,21 +244,26 @@ namespace Lyrics_2_ChordPro
                     return;
             }
 
-            try {
+            try
+            {
                 File.WriteAllText(path, txtFormattedLyrics.Text);
                 MessageBox.Show($"File '{filename}' has been written successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show($"An error occurred while writing the file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void btnPaste_Click(object sender, EventArgs e) {
+        private void btnPaste_Click(object sender, EventArgs e)
+        {
             txtOriginalLyrics.Text = Clipboard.GetText();
         }
 
-        private void btnCopy_Click(object sender, EventArgs e) {
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
             Clipboard.SetText(txtTitle.Text + " - " + txtArtist.Text);
         }
+
     }
 }
