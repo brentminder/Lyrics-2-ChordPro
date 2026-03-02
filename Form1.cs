@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 
 namespace Lyrics_2_ChordPro
 {
@@ -16,6 +17,12 @@ namespace Lyrics_2_ChordPro
             this.Icon = CreateNoteIcon();
 
             txtOriginalLyrics.KeyDown += txtOriginalLyrics_KeyDown;
+
+            // load last used folder from registry
+            LoadFolderFromRegistry();
+
+            // save last used folder when form is closing
+            this.FormClosing += Form1_FormClosing;
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -258,6 +265,47 @@ namespace Lyrics_2_ChordPro
         private void btnPaste_Click(object sender, EventArgs e)
         {
             txtOriginalLyrics.Text = Clipboard.GetText();
+        }
+
+        private void Form1_FormClosing(object? sender, FormClosingEventArgs e)
+        {
+            SaveFolderToRegistry();
+        }
+
+        private void LoadFolderFromRegistry()
+        {
+            try
+            {
+                using var key = Registry.CurrentUser.OpenSubKey("Software\\Lyrics-2-ChordPro");
+                if (key is null)
+                    return;
+
+                var value = key.GetValue("LastFolder") as string;
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    txtFolder.Text = value;
+                }
+            }
+            catch
+            {
+                // ignore registry read errors
+            }
+        }
+
+        private void SaveFolderToRegistry()
+        {
+            try
+            {
+                using var key = Registry.CurrentUser.CreateSubKey("Software\\Lyrics-2-ChordPro");
+                if (key is null)
+                    return;
+
+                key.SetValue("LastFolder", txtFolder.Text ?? string.Empty, RegistryValueKind.String);
+            }
+            catch
+            {
+                // ignore registry write errors
+            }
         }
 
         private void btnCopy_Click(object sender, EventArgs e)

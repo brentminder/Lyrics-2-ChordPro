@@ -24,8 +24,7 @@
         ///  Required method for Designer support - do not modify
         ///  the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             label1 = new Label();
             label2 = new Label();
             txtOriginalLyrics = new TextBox();
@@ -315,12 +314,12 @@
             // 
             // txtFolder
             // 
-            txtFolder.Font = new Font("Segoe UI", 10F);
+            txtFolder.Font = new Font("Segoe UI", 8F);
             txtFolder.Location = new Point(13, 35);
             txtFolder.MaxLength = 444;
             txtFolder.Name = "txtFolder";
             txtFolder.PlaceholderText = "3";
-            txtFolder.Size = new Size(171, 25);
+            txtFolder.Size = new Size(171, 22);
             txtFolder.TabIndex = 8;
             txtFolder.Text = "G:\\My Drive\\musician\\LivePrompter2";
             // 
