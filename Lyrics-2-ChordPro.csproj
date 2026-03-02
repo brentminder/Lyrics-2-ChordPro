@@ -9,4 +9,36 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <!-- After build, copy the produced EXE to the solution (main) folder. -->
+  <Target Name="CopyExeToSolutionDir" AfterTargets="Build">
+    <!-- Use SolutionDir when available (Visual Studio). Otherwise fall back to the project directory. -->
+    <PropertyGroup>
+      <_SolutionRoot Condition="'$(SolutionDir)' != ''">$(SolutionDir)</_SolutionRoot>
+      <_SolutionRoot Condition="'$(SolutionDir)' == ''">$(MSBuildProjectDirectory)</_SolutionRoot>
+      <!-- Destination file path in the solution/project root -->
+      <_DestinationFile>$(_SolutionRoot)\$(TargetFileName)</_DestinationFile>
+    </PropertyGroup>
+
+    <!-- Determine possible app host EXE (apphost may be produced alongside the DLL) -->
+    <PropertyGroup>
+      <_AppHost>$([System.IO.Path]::Combine('$(TargetDir)', '$(AssemblyName).exe'))</_AppHost>
+      <_RuntimeConfig>$([System.IO.Path]::Combine('$(TargetDir)', '$(AssemblyName).runtimeconfig.json'))</_RuntimeConfig>
+      <_DepsJson>$([System.IO.Path]::Combine('$(TargetDir)', '$(AssemblyName).deps.json'))</_DepsJson>
+    </PropertyGroup>
+
+    <!-- Collect files to copy: the main target assembly, apphost EXE (if present), and runtime files -->
+    <ItemGroup>
+      <FilesToCopy Include="$(TargetPath)" Condition="Exists('$(TargetPath)')" />
+      <FilesToCopy Include="$(_AppHost)" Condition="Exists('$(_AppHost)')" />
+      <!-- runtime configuration and deps files are required for the host to locate the runtime -->
+      <FilesToCopy Include="$(_RuntimeConfig)" Condition="Exists('$(_RuntimeConfig)')" />
+      <FilesToCopy Include="$(_DepsJson)" Condition="Exists('$(_DepsJson)')" />
+    </ItemGroup>
+
+    <Message Importance="High" Text="Copying files: @(FilesToCopy->'%(FullPath)', ', ') to $(_SolutionRoot)" />
+
+    <!-- Copy each found file into the solution/project root preserving filename -->
+    <Copy SourceFiles="@(FilesToCopy)" DestinationFiles="@(FilesToCopy->'$(_SolutionRoot)\%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+
 </Project>
