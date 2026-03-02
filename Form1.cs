@@ -167,7 +167,7 @@ namespace Lyrics_2_ChordPro
                 var normalized = value.Replace("prechorus", "pre-chorus", StringComparison.OrdinalIgnoreCase);
                 var titleCased = textInfo.ToTitleCase(normalized.ToLowerInvariant());
                 formattedLines.AppendLine();
-                formattedLines.AppendLine("{soc:" + titleCased + "}");
+                formattedLines.AppendLine(titleCased + ":");
             };
 
             foreach (var line in lines)
