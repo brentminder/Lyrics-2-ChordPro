@@ -13,8 +13,25 @@ namespace Lyrics_2_ChordPro
         public Form1()
         {
             InitializeComponent();
-            // assign a musical-note icon generated at runtime
-            this.Icon = CreateNoteIcon();
+            // try to use a project-provided icon (note.ico) so the pinned app has a proper icon;
+            // fallback to the runtime-generated musical-note icon when the file is not present.
+            try
+            {
+                var exeDir = AppContext.BaseDirectory;
+                var iconPath = Path.Combine(exeDir, "note.ico");
+                if (File.Exists(iconPath))
+                {
+                    this.Icon = new Icon(iconPath);
+                }
+                else
+                {
+                    this.Icon = CreateNoteIcon();
+                }
+            }
+            catch
+            {
+                this.Icon = CreateNoteIcon();
+            }
 
             txtOriginalLyrics.KeyDown += txtOriginalLyrics_KeyDown;
 

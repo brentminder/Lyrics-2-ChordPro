@@ -7,6 +7,8 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Application icon to embed into the produced EXE. Provide a file named 'note.ico' in the project root. -->
+    <ApplicationIcon>note.ico</ApplicationIcon>
   </PropertyGroup>
 
   <!-- After build, copy the produced EXE to the solution (main) folder. -->
