@@ -29,6 +29,10 @@ Screenshot 1: main window with input lyrics
 Screenshot 2: diagrammed output with explanations of the editing steps
 ![Screenshot: formatted output](screenshots/screen-2.png)
 
+Screenshot 3: LivePrompter2 output on Pixel 6 Pro phone
+
+![Screenshot: formatted output](screenshots/screen-3.png)
+
 Features
 - Normalize pasted lyrics and common Unicode line separators
 - Parse "Lyrics of <title> by <artist>" headers
