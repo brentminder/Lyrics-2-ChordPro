@@ -23,6 +23,11 @@ Just another lonely boy in town
 ...
 ```
 
+Screenshots
+
+- [Screenshot: main window](screenshots/screenshot1.png)
+- [Screenshot: formatted output](screenshots/screenshot2.png)
+
 
 Features
 - Normalize pasted lyrics and common Unicode line separators
