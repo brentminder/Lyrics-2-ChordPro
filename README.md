@@ -8,18 +8,20 @@ This small Windows app parses pasted lyrics, extracts basic metadata (title/arti
 It's currently set to parse content specifically from musixmatch.com.
 
 Example input:
-	Lyrics of Tequila Sunrise (2013 Remaster) by Eagles
-	verse
-	It's another tequila sunrise
-	Starin' slowly 'cross the sky
-	Said goodbye
-	He was just a hired hand
-	Workin' on the dreams he planned to try
-	The days go by
-	chorus
-	Every night when the sun goes down
-	Just another lonely boy in town
+```text
+Lyrics of Tequila Sunrise (2013 Remaster) by Eagles
+verse
+It's another tequila sunrise
+Starin' slowly 'cross the sky
+Said goodbye
+He was just a hired hand
+Workin' on the dreams he planned to try
+The days go by
+chorus
+Every night when the sun goes down
+Just another lonely boy in town
 ...
+```
 
 
 Features
