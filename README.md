@@ -26,7 +26,7 @@ Just another lonely boy in town
 Screenshots
 
 - [Screenshot: main window](screenshots/screen-1.png)
-- [Screenshot: formatted output](screenshots/screen-1.png)
+- [Screenshot: formatted output](screenshots/screen-2.png)
 
 
 Features
