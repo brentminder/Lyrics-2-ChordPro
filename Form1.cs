@@ -1,6 +1,5 @@
 using System.Globalization;
 using System.Text;
-using System.Drawing;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
@@ -330,5 +329,14 @@ namespace Lyrics_2_ChordPro
             Clipboard.SetText(txtTitle.Text + " - " + txtArtist.Text);
         }
 
+        private void linkMusixMatch_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var psi = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "https://www.musixmatch.com/search",
+                UseShellExecute = true
+            };
+            System.Diagnostics.Process.Start(psi);
+        }
     }
 }

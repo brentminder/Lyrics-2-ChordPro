@@ -24,7 +24,8 @@
         ///  Required method for Designer support - do not modify
         ///  the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             label1 = new Label();
             label2 = new Label();
@@ -52,6 +53,7 @@
             label9 = new Label();
             btnWriteFile = new Button();
             btnPaste = new Button();
+            linkMusixMatch = new LinkLabel();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -122,9 +124,9 @@
             label3.Font = new Font("Segoe UI", 12F);
             label3.Location = new Point(351, 79);
             label3.Name = "label3";
-            label3.Size = new Size(122, 21);
+            label3.Size = new Size(312, 21);
             label3.TabIndex = 5;
-            label3.Text = "Formatted lyrics";
+            label3.Text = "Formatted lyrics (ChordPro/LivePrompter2)";
             // 
             // panel1
             // 
@@ -358,11 +360,24 @@
             btnPaste.UseVisualStyleBackColor = true;
             btnPaste.Click += btnPaste_Click;
             // 
+            // linkMusixMatch
+            // 
+            linkMusixMatch.AutoSize = true;
+            linkMusixMatch.Font = new Font("Segoe UI", 12F);
+            linkMusixMatch.Location = new Point(124, 79);
+            linkMusixMatch.Name = "linkMusixMatch";
+            linkMusixMatch.Size = new Size(127, 21);
+            linkMusixMatch.TabIndex = 14;
+            linkMusixMatch.TabStop = true;
+            linkMusixMatch.Text = "MusixMatch.com";
+            linkMusixMatch.LinkClicked += linkMusixMatch_LinkClicked;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1129, 695);
+            Controls.Add(linkMusixMatch);
             Controls.Add(btnPaste);
             Controls.Add(btnWriteFile);
             Controls.Add(panel2);
@@ -414,5 +429,6 @@
         private Button btnPaste;
         private Button btnCopy;
         private Button btnMinute3;
+        private LinkLabel linkMusixMatch;
     }
 }
