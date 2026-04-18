@@ -295,6 +295,10 @@ namespace Lyrics_2_ChordPro
             OpenLink("https://www.azlyrics.com/");
         }
 
+        private void linkGenius_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            OpenLink("https://genius.com/search");
+        }
+
         private void OpenLink(string url) {
             try {
                 var psi = new System.Diagnostics.ProcessStartInfo {
@@ -313,7 +317,7 @@ namespace Lyrics_2_ChordPro
         }
 
         private void txtSeconds_TextChanged(object sender, EventArgs e) {
-            RefreshLyrics() ;
+            RefreshLyrics();
         }
     }
 }

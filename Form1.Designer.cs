@@ -26,7 +26,6 @@
         /// </summary>
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            label1 = new Label();
             label2 = new Label();
             txtOriginalLyrics = new TextBox();
             btnRefresh = new Button();
@@ -54,29 +53,31 @@
             btnPaste = new Button();
             linkMusixMatch = new LinkLabel();
             linkAzLyrics = new LinkLabel();
+            tabControl1 = new TabControl();
+            tabLyricsToChordPro = new TabPage();
+            splitMain = new SplitContainer();
+            splitChild = new SplitContainer();
+            linkGenius = new LinkLabel();
+            tabLivePrompterUtils = new TabPage();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
+            tabControl1.SuspendLayout();
+            tabLyricsToChordPro.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitMain).BeginInit();
+            splitMain.Panel1.SuspendLayout();
+            splitMain.Panel2.SuspendLayout();
+            splitMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitChild).BeginInit();
+            splitChild.Panel1.SuspendLayout();
+            splitChild.Panel2.SuspendLayout();
+            splitChild.SuspendLayout();
             SuspendLayout();
-            // 
-            // label1
-            // 
-            label1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            label1.BackColor = SystemColors.ActiveBorder;
-            label1.BorderStyle = BorderStyle.FixedSingle;
-            label1.Font = new Font("Segoe UI", 16F);
-            label1.ForeColor = SystemColors.ActiveCaptionText;
-            label1.Location = new Point(12, 18);
-            label1.Name = "label1";
-            label1.Size = new Size(1105, 37);
-            label1.TabIndex = 0;
-            label1.Text = "Utilities to convert song lyrics into ChordPro (LivePrompter2) format";
-            label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F);
-            label2.Location = new Point(12, 79);
+            label2.Location = new Point(16, 15);
             label2.Name = "label2";
             label2.Size = new Size(106, 21);
             label2.TabIndex = 1;
@@ -84,24 +85,26 @@
             // 
             // txtOriginalLyrics
             // 
-            txtOriginalLyrics.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            txtOriginalLyrics.Location = new Point(12, 103);
+            txtOriginalLyrics.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            txtOriginalLyrics.BackColor = Color.Black;
+            txtOriginalLyrics.ForeColor = Color.White;
+            txtOriginalLyrics.Location = new Point(16, 39);
             txtOriginalLyrics.Multiline = true;
             txtOriginalLyrics.Name = "txtOriginalLyrics";
             txtOriginalLyrics.ScrollBars = ScrollBars.Both;
-            txtOriginalLyrics.Size = new Size(324, 580);
+            txtOriginalLyrics.Size = new Size(409, 652);
             txtOriginalLyrics.TabIndex = 2;
             txtOriginalLyrics.WordWrap = false;
             txtOriginalLyrics.TextChanged += txtOriginalLyrics_TextChanged;
             // 
             // btnRefresh
             // 
-            btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             btnRefresh.Cursor = Cursors.Hand;
             btnRefresh.Font = new Font("Segoe UI", 12F);
-            btnRefresh.Location = new Point(916, 103);
+            btnRefresh.Location = new Point(8, 6);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(201, 39);
+            btnRefresh.Size = new Size(304, 39);
             btnRefresh.TabIndex = 3;
             btnRefresh.Text = "&Refresh";
             btnRefresh.UseVisualStyleBackColor = true;
@@ -110,11 +113,13 @@
             // txtFormattedLyrics
             // 
             txtFormattedLyrics.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            txtFormattedLyrics.Location = new Point(351, 103);
+            txtFormattedLyrics.BackColor = Color.Black;
+            txtFormattedLyrics.ForeColor = Color.White;
+            txtFormattedLyrics.Location = new Point(0, 39);
             txtFormattedLyrics.Multiline = true;
             txtFormattedLyrics.Name = "txtFormattedLyrics";
             txtFormattedLyrics.ScrollBars = ScrollBars.Both;
-            txtFormattedLyrics.Size = new Size(559, 580);
+            txtFormattedLyrics.Size = new Size(525, 652);
             txtFormattedLyrics.TabIndex = 4;
             txtFormattedLyrics.WordWrap = false;
             // 
@@ -122,15 +127,15 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 12F);
-            label3.Location = new Point(351, 79);
+            label3.Location = new Point(0, 15);
             label3.Name = "label3";
-            label3.Size = new Size(312, 21);
+            label3.Size = new Size(203, 21);
             label3.TabIndex = 5;
-            label3.Text = "Formatted lyrics (ChordPro/LivePrompter2)";
+            label3.Text = "Formatted lyrics (ChordPro)";
             // 
             // panel1
             // 
-            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panel1.BorderStyle = BorderStyle.Fixed3D;
             panel1.Controls.Add(btnMinute3);
             panel1.Controls.Add(txtSeconds);
@@ -141,9 +146,9 @@
             panel1.Controls.Add(label5);
             panel1.Controls.Add(btnMinute2);
             panel1.Controls.Add(label4);
-            panel1.Location = new Point(917, 398);
+            panel1.Location = new Point(9, 301);
             panel1.Name = "panel1";
-            panel1.Size = new Size(200, 116);
+            panel1.Size = new Size(303, 116);
             panel1.TabIndex = 6;
             // 
             // btnMinute3
@@ -251,7 +256,7 @@
             // 
             // panel2
             // 
-            panel2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panel2.BorderStyle = BorderStyle.Fixed3D;
             panel2.Controls.Add(btnCopy);
             panel2.Controls.Add(txtArtist);
@@ -260,16 +265,17 @@
             panel2.Controls.Add(label7);
             panel2.Controls.Add(txtFolder);
             panel2.Controls.Add(label9);
-            panel2.Location = new Point(916, 191);
+            panel2.Location = new Point(8, 94);
             panel2.Name = "panel2";
-            panel2.Size = new Size(200, 201);
+            panel2.Size = new Size(303, 201);
             panel2.TabIndex = 11;
             // 
             // btnCopy
             // 
+            btnCopy.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnCopy.Cursor = Cursors.Hand;
             btnCopy.Font = new Font("Segoe UI", 8F);
-            btnCopy.Location = new Point(133, 71);
+            btnCopy.Location = new Point(238, 71);
             btnCopy.Name = "btnCopy";
             btnCopy.Size = new Size(51, 21);
             btnCopy.TabIndex = 14;
@@ -279,12 +285,13 @@
             // 
             // txtArtist
             // 
+            txtArtist.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             txtArtist.Font = new Font("Segoe UI", 10F);
             txtArtist.Location = new Point(13, 155);
             txtArtist.MaxLength = 444;
             txtArtist.Name = "txtArtist";
             txtArtist.PlaceholderText = "artist/band";
-            txtArtist.Size = new Size(171, 25);
+            txtArtist.Size = new Size(276, 25);
             txtArtist.TabIndex = 12;
             // 
             // label8
@@ -299,12 +306,13 @@
             // 
             // txtTitle
             // 
+            txtTitle.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             txtTitle.Font = new Font("Segoe UI", 10F);
             txtTitle.Location = new Point(13, 95);
             txtTitle.MaxLength = 444;
             txtTitle.Name = "txtTitle";
             txtTitle.PlaceholderText = "song title";
-            txtTitle.Size = new Size(171, 25);
+            txtTitle.Size = new Size(276, 25);
             txtTitle.TabIndex = 10;
             // 
             // label7
@@ -319,12 +327,13 @@
             // 
             // txtFolder
             // 
+            txtFolder.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             txtFolder.Font = new Font("Segoe UI", 8F);
             txtFolder.Location = new Point(13, 35);
             txtFolder.MaxLength = 444;
             txtFolder.Name = "txtFolder";
             txtFolder.PlaceholderText = "3";
-            txtFolder.Size = new Size(171, 22);
+            txtFolder.Size = new Size(276, 22);
             txtFolder.TabIndex = 8;
             txtFolder.Text = "G:\\My Drive\\musician\\LivePrompter2";
             // 
@@ -340,12 +349,12 @@
             // 
             // btnWriteFile
             // 
-            btnWriteFile.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnWriteFile.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             btnWriteFile.Cursor = Cursors.Hand;
             btnWriteFile.Font = new Font("Segoe UI", 12F);
-            btnWriteFile.Location = new Point(915, 146);
+            btnWriteFile.Location = new Point(7, 49);
             btnWriteFile.Name = "btnWriteFile";
-            btnWriteFile.Size = new Size(201, 39);
+            btnWriteFile.Size = new Size(304, 39);
             btnWriteFile.TabIndex = 12;
             btnWriteFile.Text = "&Write File";
             btnWriteFile.UseVisualStyleBackColor = true;
@@ -353,20 +362,23 @@
             // 
             // btnPaste
             // 
+            btnPaste.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnPaste.Cursor = Cursors.Hand;
-            btnPaste.Location = new Point(264, 79);
+            btnPaste.Font = new Font("Segoe UI", 12F);
+            btnPaste.Location = new Point(256, 5);
             btnPaste.Name = "btnPaste";
-            btnPaste.Size = new Size(72, 23);
+            btnPaste.Size = new Size(169, 33);
             btnPaste.TabIndex = 13;
-            btnPaste.Text = "&Paste";
+            btnPaste.Text = "&Paste Original Lyrics";
             btnPaste.UseVisualStyleBackColor = true;
             btnPaste.Click += btnPaste_Click;
             // 
             // linkMusixMatch
             // 
+            linkMusixMatch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             linkMusixMatch.AutoSize = true;
             linkMusixMatch.Font = new Font("Segoe UI", 12F);
-            linkMusixMatch.Location = new Point(124, 79);
+            linkMusixMatch.Location = new Point(205, 15);
             linkMusixMatch.Name = "linkMusixMatch";
             linkMusixMatch.Size = new Size(127, 21);
             linkMusixMatch.TabIndex = 14;
@@ -376,9 +388,10 @@
             // 
             // linkAzLyrics
             // 
+            linkAzLyrics.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             linkAzLyrics.AutoSize = true;
             linkAzLyrics.Font = new Font("Segoe UI", 12F);
-            linkAzLyrics.Location = new Point(124, 58);
+            linkAzLyrics.Location = new Point(332, 15);
             linkAzLyrics.Name = "linkAzLyrics";
             linkAzLyrics.Size = new Size(101, 21);
             linkAzLyrics.TabIndex = 15;
@@ -386,39 +399,131 @@
             linkAzLyrics.Text = "AZLyrics.com";
             linkAzLyrics.LinkClicked += linkAzLyrics_LinkClicked;
             // 
+            // tabControl1
+            // 
+            tabControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            tabControl1.Controls.Add(tabLyricsToChordPro);
+            tabControl1.Controls.Add(tabLivePrompterUtils);
+            tabControl1.Location = new Point(12, 12);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(1303, 743);
+            tabControl1.TabIndex = 16;
+            // 
+            // tabLyricsToChordPro
+            // 
+            tabLyricsToChordPro.BackColor = Color.Transparent;
+            tabLyricsToChordPro.Controls.Add(splitMain);
+            tabLyricsToChordPro.Location = new Point(4, 24);
+            tabLyricsToChordPro.Name = "tabLyricsToChordPro";
+            tabLyricsToChordPro.Padding = new Padding(3);
+            tabLyricsToChordPro.Size = new Size(1295, 715);
+            tabLyricsToChordPro.TabIndex = 0;
+            tabLyricsToChordPro.Text = "Lyrics To ChordPro";
+            // 
+            // splitMain
+            // 
+            splitMain.BackColor = SystemColors.ActiveCaption;
+            splitMain.Dock = DockStyle.Fill;
+            splitMain.Location = new Point(3, 3);
+            splitMain.Name = "splitMain";
+            // 
+            // splitMain.Panel1
+            // 
+            splitMain.Panel1.Controls.Add(label2);
+            splitMain.Panel1.Controls.Add(txtOriginalLyrics);
+            splitMain.Panel1.Controls.Add(btnPaste);
+            // 
+            // splitMain.Panel2
+            // 
+            splitMain.Panel2.Controls.Add(splitChild);
+            splitMain.Size = new Size(1289, 709);
+            splitMain.SplitterDistance = 428;
+            splitMain.SplitterWidth = 9;
+            splitMain.TabIndex = 17;
+            // 
+            // splitChild
+            // 
+            splitChild.Dock = DockStyle.Fill;
+            splitChild.Location = new Point(0, 0);
+            splitChild.Name = "splitChild";
+            // 
+            // splitChild.Panel1
+            // 
+            splitChild.Panel1.Controls.Add(label3);
+            splitChild.Panel1.Controls.Add(linkGenius);
+            splitChild.Panel1.Controls.Add(txtFormattedLyrics);
+            splitChild.Panel1.Controls.Add(linkMusixMatch);
+            splitChild.Panel1.Controls.Add(linkAzLyrics);
+            // 
+            // splitChild.Panel2
+            // 
+            splitChild.Panel2.BackColor = Color.CornflowerBlue;
+            splitChild.Panel2.Controls.Add(btnRefresh);
+            splitChild.Panel2.Controls.Add(panel1);
+            splitChild.Panel2.Controls.Add(panel2);
+            splitChild.Panel2.Controls.Add(btnWriteFile);
+            splitChild.Size = new Size(852, 709);
+            splitChild.SplitterDistance = 528;
+            splitChild.SplitterWidth = 9;
+            splitChild.TabIndex = 18;
+            // 
+            // linkGenius
+            // 
+            linkGenius.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            linkGenius.AutoSize = true;
+            linkGenius.Font = new Font("Segoe UI", 12F);
+            linkGenius.Location = new Point(434, 15);
+            linkGenius.Name = "linkGenius";
+            linkGenius.Size = new Size(91, 21);
+            linkGenius.TabIndex = 16;
+            linkGenius.TabStop = true;
+            linkGenius.Text = "Genius.com";
+            linkGenius.LinkClicked += linkGenius_LinkClicked;
+            // 
+            // tabLivePrompterUtils
+            // 
+            tabLivePrompterUtils.BackColor = Color.Transparent;
+            tabLivePrompterUtils.Location = new Point(4, 24);
+            tabLivePrompterUtils.Name = "tabLivePrompterUtils";
+            tabLivePrompterUtils.Padding = new Padding(3);
+            tabLivePrompterUtils.Size = new Size(1295, 715);
+            tabLivePrompterUtils.TabIndex = 1;
+            tabLivePrompterUtils.Text = "Live Prompter2 Utils";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1129, 695);
-            Controls.Add(linkAzLyrics);
-            Controls.Add(linkMusixMatch);
-            Controls.Add(btnPaste);
-            Controls.Add(btnWriteFile);
-            Controls.Add(panel2);
-            Controls.Add(panel1);
-            Controls.Add(label3);
-            Controls.Add(txtFormattedLyrics);
-            Controls.Add(btnRefresh);
-            Controls.Add(txtOriginalLyrics);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            BackColor = Color.Black;
+            ClientSize = new Size(1327, 767);
+            Controls.Add(tabControl1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
             Name = "Form1";
+            SizeGripStyle = SizeGripStyle.Show;
             Text = "Lyrics to ChordPro";
             KeyPress += Form1_KeyPress;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            tabControl1.ResumeLayout(false);
+            tabLyricsToChordPro.ResumeLayout(false);
+            splitMain.Panel1.ResumeLayout(false);
+            splitMain.Panel1.PerformLayout();
+            splitMain.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitMain).EndInit();
+            splitMain.ResumeLayout(false);
+            splitChild.Panel1.ResumeLayout(false);
+            splitChild.Panel1.PerformLayout();
+            splitChild.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitChild).EndInit();
+            splitChild.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
-
-        private Label label1;
         private Label label2;
         private TextBox txtOriginalLyrics;
         private Button btnRefresh;
@@ -446,5 +551,11 @@
         private Button btnMinute3;
         private LinkLabel linkMusixMatch;
         private LinkLabel linkAzLyrics;
+        private TabControl tabControl1;
+        private TabPage tabLyricsToChordPro;
+        private TabPage tabLivePrompterUtils;
+        private LinkLabel linkGenius;
+        private SplitContainer splitMain;
+        private SplitContainer splitChild;
     }
 }
