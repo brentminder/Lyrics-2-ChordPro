@@ -24,8 +24,7 @@
         ///  Required method for Designer support - do not modify
         ///  the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             label1 = new Label();
             label2 = new Label();
@@ -54,6 +53,7 @@
             btnWriteFile = new Button();
             btnPaste = new Button();
             linkMusixMatch = new LinkLabel();
+            linkAzLyrics = new LinkLabel();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             SuspendLayout();
@@ -168,6 +168,7 @@
             txtSeconds.Size = new Size(33, 29);
             txtSeconds.TabIndex = 10;
             txtSeconds.TextAlign = HorizontalAlignment.Center;
+            txtSeconds.TextChanged += txtSeconds_TextChanged;
             txtSeconds.KeyDown += txtSeconds_UpDown;
             // 
             // label6
@@ -190,6 +191,7 @@
             txtMinutes.TabIndex = 8;
             txtMinutes.Text = "3";
             txtMinutes.TextAlign = HorizontalAlignment.Right;
+            txtMinutes.TextChanged += txtMinutes_TextChanged;
             // 
             // btnMinute5
             // 
@@ -372,11 +374,24 @@
             linkMusixMatch.Text = "MusixMatch.com";
             linkMusixMatch.LinkClicked += linkMusixMatch_LinkClicked;
             // 
+            // linkAzLyrics
+            // 
+            linkAzLyrics.AutoSize = true;
+            linkAzLyrics.Font = new Font("Segoe UI", 12F);
+            linkAzLyrics.Location = new Point(124, 58);
+            linkAzLyrics.Name = "linkAzLyrics";
+            linkAzLyrics.Size = new Size(101, 21);
+            linkAzLyrics.TabIndex = 15;
+            linkAzLyrics.TabStop = true;
+            linkAzLyrics.Text = "AZLyrics.com";
+            linkAzLyrics.LinkClicked += linkAzLyrics_LinkClicked;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1129, 695);
+            Controls.Add(linkAzLyrics);
             Controls.Add(linkMusixMatch);
             Controls.Add(btnPaste);
             Controls.Add(btnWriteFile);
@@ -430,5 +445,6 @@
         private Button btnCopy;
         private Button btnMinute3;
         private LinkLabel linkMusixMatch;
+        private LinkLabel linkAzLyrics;
     }
 }

@@ -9,26 +9,21 @@ namespace Lyrics_2_ChordPro
     {
         private bool _normalizingOriginalLyrics;
 
-        public Form1()
-        {
+        public Form1() {
             InitializeComponent();
             // try to use a project-provided icon (note.ico) so the pinned app has a proper icon;
             // fallback to the runtime-generated musical-note icon when the file is not present.
-            try
-            {
+            try {
                 var exeDir = AppContext.BaseDirectory;
                 var iconPath = Path.Combine(exeDir, "note.ico");
-                if (File.Exists(iconPath))
-                {
+                if (File.Exists(iconPath)) {
                     this.Icon = new Icon(iconPath);
                 }
-                else
-                {
+                else {
                     this.Icon = CreateNoteIcon();
                 }
             }
-            catch
-            {
+            catch {
                 this.Icon = CreateNoteIcon();
             }
 
@@ -44,12 +39,10 @@ namespace Lyrics_2_ChordPro
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool DestroyIcon(IntPtr hIcon);
 
-        private Icon CreateNoteIcon()
-        {
+        private Icon CreateNoteIcon() {
             const int size = 32;
             using var bmp = new Bitmap(size, size);
-            using (var g = Graphics.FromImage(bmp))
-            {
+            using (var g = Graphics.FromImage(bmp)) {
                 g.Clear(Color.Transparent);
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
                 using var font = new Font("Segoe UI Symbol", 20, FontStyle.Regular, GraphicsUnit.Pixel);
@@ -59,29 +52,24 @@ namespace Lyrics_2_ChordPro
             }
 
             var hIcon = bmp.GetHicon();
-            try
-            {
+            try {
                 using var iconFromHandle = Icon.FromHandle(hIcon);
                 var clone = (Icon)iconFromHandle.Clone();
                 return clone;
             }
-            finally
-            {
+            finally {
                 // release the original handle
                 DestroyIcon(hIcon);
             }
         }
 
-        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == 27)
-            {
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e) {
+            if (e.KeyChar == 27) {
                 this.Close();
             }
         }
 
-        private void txtOriginalLyrics_KeyDown(object sender, KeyEventArgs e)
-        {
+        private void txtOriginalLyrics_KeyDown(object sender, KeyEventArgs e) {
             var isPasteShortcut =
                 (e.Control && e.KeyCode == Keys.V) ||
                 (e.Shift && e.KeyCode == Keys.Insert);
@@ -98,8 +86,7 @@ namespace Lyrics_2_ChordPro
             e.Handled = true;
         }
 
-        private static string NormalizeNewLines(string text)
-        {
+        private static string NormalizeNewLines(string text) {
             return text
                 .Replace("\r\n", "\n")
                 .Replace("\r", "\n")
@@ -109,20 +96,17 @@ namespace Lyrics_2_ChordPro
                 .Replace("\n", Environment.NewLine);
         }
 
-        private void txtOriginalLyrics_TextChanged(object sender, EventArgs e)
-        {
+        private void txtOriginalLyrics_TextChanged(object sender, EventArgs e) {
             RefreshLyrics();
         }
 
-        private void RefreshLyrics()
-        {
+        private void RefreshLyrics() {
             if (_normalizingOriginalLyrics)
                 return;
 
             var normalizedOriginalLyrics = NormalizeNewLines(txtOriginalLyrics.Text);
 
-            if (!string.Equals(txtOriginalLyrics.Text, normalizedOriginalLyrics, StringComparison.Ordinal))
-            {
+            if (!string.Equals(txtOriginalLyrics.Text, normalizedOriginalLyrics, StringComparison.Ordinal)) {
                 var caret = txtOriginalLyrics.SelectionStart;
                 _normalizingOriginalLyrics = true;
                 txtOriginalLyrics.Text = normalizedOriginalLyrics;
@@ -133,8 +117,7 @@ namespace Lyrics_2_ChordPro
             txtFormattedLyrics.Text = FormatLyrics(normalizedOriginalLyrics);
         }
 
-        private string FormatLyrics(string originalLyrics)
-        {
+        private string FormatLyrics(string originalLyrics) {
             if (string.IsNullOrWhiteSpace(originalLyrics))
                 return string.Empty;
 
@@ -161,34 +144,30 @@ namespace Lyrics_2_ChordPro
                 value.StartsWith("guitar solo", StringComparison.OrdinalIgnoreCase) ||
                 value.StartsWith("outro", StringComparison.OrdinalIgnoreCase);
 
-            Action<string> appendTitleCased = value =>
-            {
+            Action<string> appendTitleCased = value => {
                 var normalized = value.Replace("prechorus", "pre-chorus", StringComparison.OrdinalIgnoreCase);
                 var titleCased = textInfo.ToTitleCase(normalized.ToLowerInvariant());
                 formattedLines.AppendLine();
                 formattedLines.AppendLine(titleCased + ":");
             };
 
-            foreach (var line in lines)
-            {
+            foreach (var line in lines) {
                 var trimmedLine = line.Trim();
 
                 //parse title and artist from the header
-                //eg: Lyrics of down by the water by liz phair
+
+                //musixmatch.com eg: Lyrics of down by the water by liz phair
                 if (trimmedLine.StartsWith("lyrics of ", StringComparison.OrdinalIgnoreCase) &&
-                    !isSectionLine(trimmedLine))
-                {
+                    !isSectionLine(trimmedLine)) {
                     const string lyricsOf = "lyrics of ";
                     var metadata = trimmedLine[lyricsOf.Length..].Trim();
                     var byIndex = metadata.LastIndexOf(" by ", StringComparison.OrdinalIgnoreCase);
 
-                    if (byIndex > 0)
-                    {
+                    if (byIndex > 0) {
                         var title = metadata[..byIndex].Trim();
                         var artist = metadata[(byIndex + 4)..].Trim();
 
-                        if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(artist))
-                        {
+                        if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(artist)) {
                             formattedLines.AppendLine("{title:" + title + "}");
                             formattedLines.AppendLine("{artist:" + artist + "}");
                             txtTitle.Text = title;
@@ -207,31 +186,25 @@ namespace Lyrics_2_ChordPro
             return formattedLines.ToString();
         }
 
-        private void btnMinute2_Click(object sender, EventArgs e)
-        {
+        private void btnMinute2_Click(object sender, EventArgs e) {
             txtMinutes.Text = "2";
         }
-        private void btnMinute3_Click(object sender, EventArgs e)
-        {
+        private void btnMinute3_Click(object sender, EventArgs e) {
             txtMinutes.Text = "3";
         }
-        private void btnMinute4_Click(object sender, EventArgs e)
-        {
+        private void btnMinute4_Click(object sender, EventArgs e) {
             txtMinutes.Text = "4";
         }
 
-        private void btnMinute5_Click(object sender, EventArgs e)
-        {
+        private void btnMinute5_Click(object sender, EventArgs e) {
             txtMinutes.Text = "5";
         }
 
-        private void txtSeconds_UpDown(object sender, KeyEventArgs e)
-        {
+        private void txtSeconds_UpDown(object sender, KeyEventArgs e) {
             if (!int.TryParse(txtSeconds.Text, out var seconds))
                 seconds = 0;
 
-            var newValue = e.KeyCode switch
-            {
+            var newValue = e.KeyCode switch {
                 Keys.Up => Math.Min(59, seconds + 10),
                 Keys.Down => Math.Max(0, seconds - 1),
                 _ => (int?)null
@@ -246,17 +219,14 @@ namespace Lyrics_2_ChordPro
             e.Handled = true;
         }
 
-        private void btnRefresh_Click(object sender, EventArgs e)
-        {
+        private void btnRefresh_Click(object sender, EventArgs e) {
             RefreshLyrics();
         }
 
-        private void btnWriteFile_Click(object sender, EventArgs e)
-        {
+        private void btnWriteFile_Click(object sender, EventArgs e) {
             var filename = txtTitle.Text + " - " + txtArtist.Text + ".txt";
             var path = Path.Combine(txtFolder.Text, filename);
-            if (File.Exists(path))
-            {
+            if (File.Exists(path)) {
                 var result = MessageBox.Show(
                     $"The file '{filename}' already exists. Overwrite it?",
                     "File Exists",
@@ -267,76 +237,83 @@ namespace Lyrics_2_ChordPro
                     return;
             }
 
-            try
-            {
+            try {
                 File.WriteAllText(path, txtFormattedLyrics.Text);
                 MessageBox.Show($"File '{filename}' has been written successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 MessageBox.Show($"An error occurred while writing the file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void btnPaste_Click(object sender, EventArgs e)
-        {
+        private void btnPaste_Click(object sender, EventArgs e) {
             txtOriginalLyrics.Text = Clipboard.GetText();
         }
 
-        private void Form1_FormClosing(object? sender, FormClosingEventArgs e)
-        {
+        private void Form1_FormClosing(object? sender, FormClosingEventArgs e) {
             SaveFolderToRegistry();
         }
 
-        private void LoadFolderFromRegistry()
-        {
-            try
-            {
+        private void LoadFolderFromRegistry() {
+            try {
                 using var key = Registry.CurrentUser.OpenSubKey("Software\\Lyrics-2-ChordPro");
                 if (key is null)
                     return;
 
                 var value = key.GetValue("LastFolder") as string;
-                if (!string.IsNullOrWhiteSpace(value))
-                {
+                if (!string.IsNullOrWhiteSpace(value)) {
                     txtFolder.Text = value;
                 }
             }
-            catch
-            {
+            catch {
                 // ignore registry read errors
             }
         }
 
-        private void SaveFolderToRegistry()
-        {
-            try
-            {
+        private void SaveFolderToRegistry() {
+            try {
                 using var key = Registry.CurrentUser.CreateSubKey("Software\\Lyrics-2-ChordPro");
                 if (key is null)
                     return;
 
                 key.SetValue("LastFolder", txtFolder.Text ?? string.Empty, RegistryValueKind.String);
             }
-            catch
-            {
+            catch {
                 // ignore registry write errors
             }
         }
 
-        private void btnCopy_Click(object sender, EventArgs e)
-        {
+        private void btnCopy_Click(object sender, EventArgs e) {
             Clipboard.SetText(txtTitle.Text + " - " + txtArtist.Text);
         }
 
-        private void linkMusixMatch_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            var psi = new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = "https://www.musixmatch.com/search",
-                UseShellExecute = true
-            };
-            System.Diagnostics.Process.Start(psi);
+        private void linkMusixMatch_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            OpenLink("https://www.musixmatch.com/search");
+        }
+
+        private void linkAzLyrics_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            OpenLink("https://www.azlyrics.com/");
+        }
+
+        private void OpenLink(string url) {
+            try {
+                var psi = new System.Diagnostics.ProcessStartInfo {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                System.Diagnostics.Process.Start(psi);
+            }
+            catch (Exception ex) {
+                MessageBox.Show($"Unable to open link: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void txtMinutes_TextChanged(object sender, EventArgs e) {
+            RefreshLyrics();
+        }
+
+        private void txtSeconds_TextChanged(object sender, EventArgs e) {
+            RefreshLyrics() ;
         }
     }
 }
