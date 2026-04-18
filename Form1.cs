@@ -34,6 +34,10 @@ namespace Lyrics_2_ChordPro
 
             // save last used folder when form is closing
             this.FormClosing += Form1_FormClosing;
+
+            // wire up Live Prompter Utils controls
+
+            LoadLivePrompterUtils();
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -319,6 +323,554 @@ namespace Lyrics_2_ChordPro
         private void txtSeconds_TextChanged(object sender, EventArgs e) {
             RefreshLyrics();
         }
+
+        #region Live Prompter Utils
+
+        private bool _suppressLivePrompterEvents = false;
+
+        private void LoadLivePrompterUtils() {
+            // sync the folder paths
+            txtChordProSongsFolder2.Text = txtChordProSongsFolder.Text;
+
+            _suppressLivePrompterEvents = false;
+
+            // populate setlists and load first item
+            PopulateSetlists();
+            RefreshLivePrompterUtils();
+        }
+
+        private void txtChordProSongsFolder_TextChanged(object sender, EventArgs e) {
+            txtChordProSongsFolder2.Text = txtChordProSongsFolder.Text;
+        }
+
+        private void PopulateSetlists() {
+            if (_suppressLivePrompterEvents)
+                return;
+
+            var songFolder = txtChordProSongsFolder.Text;
+            if (string.IsNullOrWhiteSpace(songFolder) || !Directory.Exists(songFolder)) {
+                lbSetlists.Items.Clear();
+                return;
+            }
+
+            var setlistFolder = Path.Combine(songFolder, "Setlists");
+
+            _suppressLivePrompterEvents = true;
+            lbSetlists.Items.Clear();
+            lbSetlists.Items.Add("None (All Songs)");
+
+            try {
+                if (Directory.Exists(setlistFolder)) {
+                    var setlistFiles = Directory.GetFiles(setlistFolder, "*.txt")
+                        .Select(f => Path.GetFileNameWithoutExtension(f))
+                        .OrderBy(name => name)
+                        .ToList();
+
+                    foreach (var name in setlistFiles) {
+                        lbSetlists.Items.Add(name);
+                    }
+                }
+            }
+            catch {
+                // ignore errors reading setlist folder
+            }
+
+            // select first item and cascade
+            if (lbSetlists.Items.Count > 0) {
+                lbSetlists.SelectedIndex = 0;
+            }
+
+            _suppressLivePrompterEvents = false;
+        }
+
+        private void RefreshLivePrompterUtils() {
+            ClearSongs();
+            LoadSongs();
+            ReloadSongs();
+        }   
+
+        private void lbSetlists_SelectedIndexChanged(object sender, EventArgs e) {
+            if (_suppressLivePrompterEvents)
+                return;
+
+            _suppressLivePrompterEvents = true;
+
+            txtSetlistName.Text = lbSetlists.SelectedIndex > 0 ? lbSetlists.SelectedItem?.ToString() ?? string.Empty : string.Empty;
+            RefreshLivePrompterUtils();
+
+            _suppressLivePrompterEvents = false;
+        }
+
+        private void LoadSongs() {
+            var selectedSetlist = lbSetlists.SelectedItem?.ToString();
+            if (string.IsNullOrWhiteSpace(selectedSetlist)) {
+                return;
+            }
+
+            var songFolder = txtChordProSongsFolder.Text;
+            if (string.IsNullOrWhiteSpace(songFolder) || !Directory.Exists(songFolder)) {
+                return;
+            }
+
+            try {
+                if (selectedSetlist == "None (All Songs)") {
+                    rbSongsByTitle.Enabled = true;
+                    rbSongsByArtist.Enabled = true;
+
+                    // load all .txt files from song folder
+                    var songFiles = Directory.GetFiles(songFolder, "*.txt")
+                        .Where(f => Path.GetDirectoryName(f) == songFolder)
+                        .Select(f => Path.GetFileNameWithoutExtension(f))
+                        .ToList();
+
+                    foreach (var song in songFiles) {
+                        lbSongs.Items.Add(song);
+                    }
+                }
+                else {
+                    // load from setlist file
+                    var setlistFile = Path.Combine(songFolder, "Setlists", selectedSetlist + ".txt");
+                    if (File.Exists(setlistFile)) {
+                        var lines = File.ReadAllLines(setlistFile)
+                            .Where(line => !string.IsNullOrWhiteSpace(line))
+                            .ToList();
+
+                        foreach (var line in lines) {
+                            lbSongs.Items.Add(line);
+                        }
+                    }
+                }
+            }
+            catch {
+                // ignore errors reading files
+            }
+        }
+
+        private void ReloadSongs() {
+            if (lbSetlists.SelectedIndex > 0)
+                return; //only alphabetize on the "All Songs" view, otherwise we mess up the setlist order
+
+            if (rbSongsByTitle.Checked) {
+                SortSongsByTitle();
+            }
+            else if (rbSongsByArtist.Checked) {
+                SortSongsByArtist();
+            }
+        }
+
+        private void ClearSongs() {
+            _suppressLivePrompterEvents = true;
+            lbSongs.Items.Clear();
+            txtSavedLyrics.Clear();
+            btnSaveSong.Enabled = false;
+            rbSongsByTitle.Enabled = false;
+            rbSongsByArtist.Enabled = false;
+            _suppressLivePrompterEvents = false;
+        }
+
+        private void rbSongsByTitle_CheckedChanged(object sender, EventArgs e) {
+            if (!rbSongsByTitle.Checked || _suppressLivePrompterEvents)
+                return;
+
+            _suppressLivePrompterEvents = true;
+            SortSongsByTitle();
+            _suppressLivePrompterEvents = false;
+        }
+
+        private void rbSongsByArtist_CheckedChanged(object sender, EventArgs e) {
+            if (!rbSongsByArtist.Checked || _suppressLivePrompterEvents)
+                return;
+
+            _suppressLivePrompterEvents = true;
+            SortSongsByArtist();
+            _suppressLivePrompterEvents = false;
+        }
+
+        private void SortSongsByTitle() {
+            var songs = lbSongs.Items.Cast<string>().ToList();
+            songs.Sort(StringComparer.OrdinalIgnoreCase);
+
+            _suppressLivePrompterEvents = true;
+            lbSongs.Items.Clear();
+            foreach (var song in songs) {
+                lbSongs.Items.Add(song);
+            }
+            _suppressLivePrompterEvents = false;
+        }
+
+        private void SortSongsByArtist() {
+            var songs = lbSongs.Items.Cast<string>().ToList();
+
+            // swap title and artist, sort, then display
+            var swapped = songs.Select(song => {
+                var parts = song.Split(new[] { " - " }, StringSplitOptions.None);
+                if (parts.Length == 2) {
+                    return parts[1].Trim() + " - " + parts[0].Trim();
+                }
+                return song;
+            }).ToList();
+
+            swapped.Sort(StringComparer.OrdinalIgnoreCase);
+
+            _suppressLivePrompterEvents = true;
+            lbSongs.Items.Clear();
+            foreach (var song in swapped) {
+                lbSongs.Items.Add(song);
+            }
+            _suppressLivePrompterEvents = false;
+        }
+
+        private void txtSongFilter_TextChanged(object sender, EventArgs e) {
+            if (_suppressLivePrompterEvents)
+                return;
+
+            var filter = txtSongFilter.Text.ToLower();
+            var selectedSetlist = lbSetlists.SelectedItem?.ToString();
+            if (string.IsNullOrWhiteSpace(selectedSetlist)) {
+                return;
+            }
+
+            var songFolder = txtChordProSongsFolder.Text;
+            if (string.IsNullOrWhiteSpace(songFolder) || !Directory.Exists(songFolder)) {
+                return;
+            }
+
+            _suppressLivePrompterEvents = true;
+            lbSongs.Items.Clear();
+
+            try {
+                List<string> allSongs = new();
+
+                if (selectedSetlist == "None (All Songs)") {
+                    var songFiles = Directory.GetFiles(songFolder, "*.txt")
+                        .Where(f => Path.GetDirectoryName(f) == songFolder)
+                        .Select(f => Path.GetFileNameWithoutExtension(f))
+                        .ToList();
+                    allSongs = songFiles;
+                }
+                else {
+                    var setlistFile = Path.Combine(songFolder, "Setlists", selectedSetlist + ".txt");
+                    if (File.Exists(setlistFile)) {
+                        allSongs = File.ReadAllLines(setlistFile)
+                            .Where(line => !string.IsNullOrWhiteSpace(line))
+                            .ToList();
+                    }
+                }
+
+                // filter songs
+                var filteredSongs = allSongs
+                    .Where(song => song.ToLower().Contains(filter))
+                    .ToList();
+
+                // sort based on current radio button selection
+                if (rbSongsByTitle.Checked) {
+                    filteredSongs.Sort(StringComparer.OrdinalIgnoreCase);
+                }
+                else if (rbSongsByArtist.Checked) {
+                    var swapped = filteredSongs.Select(song => {
+                        var parts = song.Split(new[] { " - " }, StringSplitOptions.None);
+                        if (parts.Length == 2) {
+                            return parts[1].Trim() + " - " + parts[0].Trim();
+                        }
+                        return song;
+                    }).ToList();
+                    swapped.Sort(StringComparer.OrdinalIgnoreCase);
+                    filteredSongs = swapped;
+                }
+
+                foreach (var song in filteredSongs) {
+                    lbSongs.Items.Add(song);
+                }
+            }
+            catch {
+                // ignore errors
+            }
+
+            _suppressLivePrompterEvents = false;
+        }
+
+        private void lbSongs_SelectedIndexChanged(object sender, EventArgs e) {
+            if (_suppressLivePrompterEvents)
+                return;
+
+            _suppressLivePrompterEvents = true;
+            txtSavedLyrics.Clear();
+
+            if (lbSongs.SelectedIndex >= 0) {
+                var selectedSong = lbSongs.SelectedItem?.ToString();
+                if (!string.IsNullOrWhiteSpace(selectedSong)) {
+                    LoadLyricsForSong(selectedSong);
+                }
+            }
+
+            _suppressLivePrompterEvents = false;
+        }
+
+        private void LoadLyricsForSong(string songName) {
+            var songFolder = txtChordProSongsFolder.Text;
+            if (string.IsNullOrWhiteSpace(songFolder) || !Directory.Exists(songFolder)) {
+                return;
+            }
+
+            // remove artist prefix if sorting by artist
+            var fileName = songName;
+            if (rbSongsByArtist.Checked) {
+                var parts = songName.Split(new[] { " - " }, StringSplitOptions.None);
+                if (parts.Length == 2) {
+                    fileName = parts[1].Trim() + " - " + parts[0].Trim();
+                }
+            }
+
+            var filePath = Path.Combine(songFolder, fileName + ".txt");
+
+            try {
+                if (File.Exists(filePath)) {
+                    txtSavedLyrics.Text = File.ReadAllText(filePath);
+                }
+            }
+            catch {
+                // ignore errors reading file
+            }
+        }
+
+        private void btnAddNewSetlist_Click(object sender, EventArgs e) {
+            var songFolder = txtChordProSongsFolder.Text;
+            if (string.IsNullOrWhiteSpace(songFolder) || !Directory.Exists(songFolder)) {
+                MessageBox.Show("Please set a valid songs folder.", "Invalid Folder", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var setlistFolder = Path.Combine(songFolder, "Setlists");
+            try {
+                Directory.CreateDirectory(setlistFolder);
+                txtSetlistName.Text = "New Setlist";
+                var setlistFile = Path.Combine(setlistFolder, txtSetlistName.Text + ".txt");
+
+                if (File.Exists(setlistFile)) {
+                    MessageBox.Show("Setlist already exists.", "Setlist Exists", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                File.WriteAllText(setlistFile, "");
+                PopulateSetlists();
+                //MessageBox.Show($"Setlist '{txtSetlistName.Text}' created successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex) {
+                MessageBox.Show($"Error creating setlist: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnCloneSetlist_Click(object sender, EventArgs e) {
+            var selectedSetlist = lbSetlists.SelectedItem?.ToString();
+            if (string.IsNullOrWhiteSpace(selectedSetlist) || selectedSetlist == "None (All Songs)") {
+                MessageBox.Show("Please select a setlist to clone.", "No Setlist Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var newName = InputBox("Enter new setlist name:", "Clone Setlist");
+            if (string.IsNullOrWhiteSpace(newName)) {
+                return;
+            }
+
+            var songFolder = txtChordProSongsFolder.Text;
+            if (string.IsNullOrWhiteSpace(songFolder) || !Directory.Exists(songFolder)) {
+                return;
+            }
+
+            var setlistFolder = Path.Combine(songFolder, "Setlists");
+            try {
+                var sourcePath = Path.Combine(setlistFolder, selectedSetlist + ".txt");
+                var destPath = Path.Combine(setlistFolder, newName + ".txt");
+
+                if (!File.Exists(sourcePath)) {
+                    MessageBox.Show("Source setlist not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (File.Exists(destPath)) {
+                    MessageBox.Show("Setlist with that name already exists.", "Setlist Exists", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                File.Copy(sourcePath, destPath);
+                PopulateSetlists();
+                MessageBox.Show($"Setlist cloned successfully as '{newName}'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex) {
+                MessageBox.Show($"Error cloning setlist: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void txtSavedLyrics_TextChanged(object sender, EventArgs e) {
+            btnSaveSong.Enabled = true;
+        }
+
+        private void btnDeleteSetlist_Click(object sender, EventArgs e) {
+            var selectedSetlist = lbSetlists.SelectedItem?.ToString();
+            if (string.IsNullOrWhiteSpace(selectedSetlist) || selectedSetlist == "None (All Songs)") {
+                MessageBox.Show("Please select a setlist to delete.", "No Setlist Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var result = MessageBox.Show(
+                $"Delete setlist '{selectedSetlist}'?",
+                "Confirm Delete",
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2);
+
+            if (result != DialogResult.OK) {
+                return;
+            }
+
+            var songFolder = txtChordProSongsFolder.Text;
+            if (string.IsNullOrWhiteSpace(songFolder) || !Directory.Exists(songFolder)) {
+                return;
+            }
+
+            var setlistFolder = Path.Combine(songFolder, "Setlists");
+            try {
+                var setlistFile = Path.Combine(setlistFolder, selectedSetlist + ".txt");
+                if (File.Exists(setlistFile)) {
+                    File.Delete(setlistFile);
+                }
+                PopulateSetlists();
+                MessageBox.Show("Setlist deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex) {
+                MessageBox.Show($"Error deleting setlist: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnSaveSetlist_Click(object sender, EventArgs e) {
+            var selectedSetlist = lbSetlists.SelectedItem?.ToString();
+            if (string.IsNullOrWhiteSpace(selectedSetlist) || selectedSetlist == "None (All Songs)") {
+                MessageBox.Show("Please select a setlist to save.", "No Setlist Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var songFolder = txtChordProSongsFolder.Text;
+            if (string.IsNullOrWhiteSpace(songFolder) || !Directory.Exists(songFolder)) {
+                return;
+            }
+
+            try {
+                var setlistFolder = Path.Combine(songFolder, "Setlists");
+                var setlistFile = Path.Combine(setlistFolder, selectedSetlist + ".txt");
+
+                var songs = lbSongs.Items.Cast<string>().ToList();
+
+                // if sorted by artist, swap back to title - artist format
+                if (rbSongsByArtist.Checked) {
+                    songs = songs.Select(song => {
+                        var parts = song.Split(new[] { " - " }, StringSplitOptions.None);
+                        if (parts.Length == 2) {
+                            return parts[1].Trim() + " - " + parts[0].Trim();
+                        }
+                        return song;
+                    }).ToList();
+                }
+
+                File.WriteAllLines(setlistFile, songs);
+                MessageBox.Show("Setlist saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex) {
+                MessageBox.Show($"Error saving setlist: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnDeleteSong_Click(object sender, EventArgs e) {
+            if (lbSongs.SelectedIndices.Count == 0) {
+                MessageBox.Show("Please select at least one song to delete.", "No Song Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var result = MessageBox.Show(
+                $"Delete {lbSongs.SelectedIndices.Count} song(s) from this setlist?",
+                "Confirm Delete",
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2);
+
+            if (result != DialogResult.OK) {
+                return;
+            }
+
+            _suppressLivePrompterEvents = true;
+            var selectedIndices = lbSongs.SelectedIndices.Cast<int>().OrderByDescending(i => i).ToList();
+            foreach (var index in selectedIndices) {
+                lbSongs.Items.RemoveAt(index);
+            }
+            _suppressLivePrompterEvents = false;
+        }
+
+        private void btnSaveSong_Click(object sender, EventArgs e) {
+            if (lbSongs.SelectedIndex < 0) {
+                MessageBox.Show("Please select a song.", "No Song Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var selectedSong = lbSongs.SelectedItem?.ToString();
+            if (string.IsNullOrWhiteSpace(selectedSong)) {
+                return;
+            }
+
+            var songFolder = txtChordProSongsFolder.Text;
+            if (string.IsNullOrWhiteSpace(songFolder) || !Directory.Exists(songFolder)) {
+                return;
+            }
+
+            // remove artist prefix if sorting by artist
+            var fileName = selectedSong;
+            if (rbSongsByArtist.Checked) {
+                var parts = selectedSong.Split(new[] { " - " }, StringSplitOptions.None);
+                if (parts.Length == 2) {
+                    fileName = parts[1].Trim() + " - " + parts[0].Trim();
+                }
+            }
+
+            var filePath = Path.Combine(songFolder, fileName + ".txt");
+
+            try {
+                File.WriteAllText(filePath, txtSavedLyrics.Text);
+                MessageBox.Show("Song lyrics saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex) {
+                MessageBox.Show($"Error saving song lyrics: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private string InputBox(string prompt, string title) {
+            var form = new Form {
+                Text = title,
+                Width = 400,
+                Height = 150,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false,
+                MinimizeBox = false,
+                StartPosition = FormStartPosition.CenterParent
+            };
+
+            var label = new Label { Text = prompt, Left = 20, Top = 20, Width = 350 };
+            var textBox = new TextBox { Left = 20, Top = 50, Width = 350 };
+            var okButton = new Button { Text = "OK", Left = 210, Top = 80, Width = 80, DialogResult = DialogResult.OK };
+            var cancelButton = new Button { Text = "Cancel", Left = 300, Top = 80, Width = 80, DialogResult = DialogResult.Cancel };
+
+            form.Controls.Add(label);
+            form.Controls.Add(textBox);
+            form.Controls.Add(okButton);
+            form.Controls.Add(cancelButton);
+            form.AcceptButton = okButton;
+            form.CancelButton = cancelButton;
+
+            return form.ShowDialog() == DialogResult.OK ? textBox.Text : null;
+        }
+
+        #endregion
+
+
+
+
 
     }
 }
