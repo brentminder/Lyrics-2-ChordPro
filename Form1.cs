@@ -225,7 +225,7 @@ namespace Lyrics_2_ChordPro
 
         private void btnWriteFile_Click(object sender, EventArgs e) {
             var filename = txtTitle.Text + " - " + txtArtist.Text + ".txt";
-            var path = Path.Combine(txtFolder.Text, filename);
+            var path = Path.Combine(txtChordProSongsFolder.Text, filename);
             if (File.Exists(path)) {
                 var result = MessageBox.Show(
                     $"The file '{filename}' already exists. Overwrite it?",
@@ -262,7 +262,7 @@ namespace Lyrics_2_ChordPro
 
                 var value = key.GetValue("LastFolder") as string;
                 if (!string.IsNullOrWhiteSpace(value)) {
-                    txtFolder.Text = value;
+                    txtChordProSongsFolder.Text = value;
                 }
             }
             catch {
@@ -276,7 +276,7 @@ namespace Lyrics_2_ChordPro
                 if (key is null)
                     return;
 
-                key.SetValue("LastFolder", txtFolder.Text ?? string.Empty, RegistryValueKind.String);
+                key.SetValue("LastFolder", txtChordProSongsFolder.Text ?? string.Empty, RegistryValueKind.String);
             }
             catch {
                 // ignore registry write errors
@@ -319,5 +319,6 @@ namespace Lyrics_2_ChordPro
         private void txtSeconds_TextChanged(object sender, EventArgs e) {
             RefreshLyrics();
         }
+
     }
 }
