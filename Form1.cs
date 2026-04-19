@@ -398,7 +398,40 @@ namespace Lyrics_2_ChordPro
         }
 
         private void btnSaveSetlistSongs_Click(object sender, EventArgs e) {
+            var selectedSetlist = lbSetlists.SelectedItem?.ToString();
+            if (string.IsNullOrWhiteSpace(selectedSetlist) || selectedSetlist == NoSetlist) {
+                MessageBox.Show("Please select a setlist to save.", "No Setlist Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
+            var songFolder = txtChordProSongsFolder.Text;
+            if (string.IsNullOrWhiteSpace(songFolder) || !Directory.Exists(songFolder)) {
+                return;
+            }
+
+            try {
+                var setlistFolder = Path.Combine(songFolder, "Setlists");
+                var setlistFile = Path.Combine(setlistFolder, selectedSetlist + ".txt");
+
+                var songs = lbSongs.Items.Cast<string>().ToList();
+
+                // if sorted by artist, swap back to title - artist format
+                if (rbSongsByArtist.Checked) {
+                    songs = songs.Select(song => {
+                        var parts = song.Split(new[] { " - " }, StringSplitOptions.None);
+                        if (parts.Length == 2) {
+                            return parts[1].Trim() + " - " + parts[0].Trim();
+                        }
+                        return song;
+                    }).ToList();
+                }
+
+                File.WriteAllLines(setlistFile, songs);
+                MessageBox.Show("Setlist saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex) {
+                MessageBox.Show($"Error saving setlist: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void lbSetlists_SelectedIndexChanged(object sender, EventArgs e) {
