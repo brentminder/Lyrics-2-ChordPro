@@ -1,4 +1,5 @@
 using Microsoft.Win32;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -15,6 +16,7 @@ namespace Lyrics_2_ChordPro
         // Drag-and-drop reorder state for lbSongs
         private Point _dragStartPoint;
         private bool _dragInProgress;
+        private Cursor? _dragNoteCursor;
 
         public Form1() {
             InitializeComponent();
@@ -72,6 +74,50 @@ namespace Lyrics_2_ChordPro
                 // release the original handle
                 DestroyIcon(hIcon);
             }
+        }
+
+        private Cursor CreateNoteCursor() {
+            const int size = 32;
+            using var bmp = new Bitmap(size, size);
+
+            using (var g = Graphics.FromImage(bmp)) {
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+
+                // Draw rounded white background
+                using (var path = CreateRoundedRect(new RectangleF(0, 0, size, size), 8))
+                using (var brush = new SolidBrush(Color.White)) {
+                    g.FillPath(brush, path);
+                }
+
+                using var font = new Font("Segoe UI Symbol", 20, FontStyle.Regular, GraphicsUnit.Pixel);
+                var note = "\u266B";
+                var layout = g.MeasureString(note, font);
+
+                g.DrawString(
+                    note,
+                    font,
+                    Brushes.Black,
+                    (size - layout.Width) / 2f,
+                    (size - layout.Height) / 2f
+                );
+            }
+
+            var hIcon = bmp.GetHicon();
+            return new Cursor(hIcon);
+        }
+
+        private GraphicsPath CreateRoundedRect(RectangleF rect, float radius) {
+            float d = radius * 2;
+            var path = new GraphicsPath();
+
+            path.AddArc(rect.X, rect.Y, d, d, 180, 90); // top-left
+            path.AddArc(rect.Right - d, rect.Y, d, d, 270, 90); // top-right
+            path.AddArc(rect.Right - d, rect.Bottom - d, d, d, 0, 90); // bottom-right
+            path.AddArc(rect.X, rect.Bottom - d, d, d, 90, 90); // bottom-left
+
+            path.CloseFigure();
+            return path;
         }
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e) {
@@ -1048,6 +1094,17 @@ namespace Lyrics_2_ChordPro
                 if (newIdx >= 0) lbSongs.SetSelected(newIdx, true);
             }
             lbSongs.EndUpdate();
+        }
+
+        private void lbSongs_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
+            if (e.Effect == DragDropEffects.Move) {
+                e.UseDefaultCursors = false;
+                _dragNoteCursor ??= CreateNoteCursor();
+                Cursor.Current = _dragNoteCursor;
+            }
+            else {
+                e.UseDefaultCursors = true;
+            }
         }
 
         private void AddSongsToSetlist(string setlistName, List<string> songsToAdd) {

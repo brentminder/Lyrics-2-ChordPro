@@ -707,6 +707,7 @@
             lbSongs.MouseMove += lbSongs_MouseMove;
             lbSongs.DragOver += lbSongs_DragOver;
             lbSongs.DragDrop += lbSongs_DragDrop;
+            lbSongs.GiveFeedback += lbSongs_GiveFeedback;
             // 
             // label11
             // 
