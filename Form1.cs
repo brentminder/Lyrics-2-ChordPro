@@ -246,7 +246,7 @@ namespace Lyrics_2_ChordPro
 
             try {
                 File.WriteAllText(path, txtFormattedLyrics.Text);
-                MessageBox.Show($"File '{filename}' has been written successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show($"File '{filename}' has been written successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex) {
                 MessageBox.Show($"An error occurred while writing the file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -427,7 +427,7 @@ namespace Lyrics_2_ChordPro
                 }
 
                 File.WriteAllLines(setlistFile, songs);
-                MessageBox.Show("Setlist saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show("Setlist saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex) {
                 MessageBox.Show($"Error saving setlist: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1013,7 +1013,7 @@ namespace Lyrics_2_ChordPro
                     ? $"All {addedCount} song(s) added to '{setlistName}' successfully."
                     : $"{addedCount} song(s) added to '{setlistName}' successfully. ({songsToAddFormatted.Count - addedCount} were already in the setlist.)";
 
-                MessageBox.Show(message, "Songs Added", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show(message, "Songs Added", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 // Refresh the current view if we're looking at the target setlist
                 if (lbSetlists.SelectedItem?.ToString() == setlistName) {
