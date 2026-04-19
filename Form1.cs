@@ -871,6 +871,10 @@ namespace Lyrics_2_ChordPro
             }
 
             try {
+                var originalSetlist = selectedSetlist;
+                if (txtSetlistName.Text.Length > 0) 
+                    selectedSetlist = txtSetlistName.Text;
+
                 var setlistFolder = Path.Combine(songFolder, "Setlists");
                 var setlistFile = Path.Combine(setlistFolder, selectedSetlist + ".txt");
 
@@ -888,7 +892,18 @@ namespace Lyrics_2_ChordPro
                 }
 
                 File.WriteAllLines(setlistFile, songs);
-                MessageBox.Show("Setlist saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show("Setlist saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                if (originalSetlist != selectedSetlist) {
+                    // if the name was changed, delete the old file and refresh setlist list
+                    var oldSetlistFile = Path.Combine(setlistFolder, originalSetlist + ".txt");
+                    if (File.Exists(oldSetlistFile)) {
+                        File.Delete(oldSetlistFile);
+                    }
+                }
+                PopulateSetlists();
+                //RefreshLivePrompterUtils();
+                lbSetlists.SelectedItem = selectedSetlist;
             }
             catch (Exception ex) {
                 MessageBox.Show($"Error saving setlist: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -949,7 +964,7 @@ namespace Lyrics_2_ChordPro
 
             try {
                 File.WriteAllText(filePath, txtSavedLyrics.Text);
-                MessageBox.Show("Song lyrics saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show("Song lyrics saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex) {
                 MessageBox.Show($"Error saving song lyrics: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
