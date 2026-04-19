@@ -84,12 +84,27 @@ namespace Lyrics_2_ChordPro
                 g.SmoothingMode = SmoothingMode.AntiAlias;
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
-                // Draw rounded white background
+                // Rounded white background
                 using (var path = CreateRoundedRect(new RectangleF(0, 0, size, size), 8))
                 using (var brush = new SolidBrush(Color.White)) {
                     g.FillPath(brush, path);
                 }
 
+                // --- Red pointer (triangle pointing to upper-left) ---
+                using (var pointer = new GraphicsPath())
+                using (var brush = new SolidBrush(Color.Red)) {
+                    // Tip near the top-left corner
+                    PointF tip = new PointF(4, 4);
+
+                    // Base of triangle slightly down/right
+                    PointF p1 = new PointF(10, 6);
+                    PointF p2 = new PointF(6, 10);
+
+                    pointer.AddPolygon(new[] { tip, p1, p2 });
+                    g.FillPath(brush, pointer);
+                }
+
+                // Note symbol
                 using var font = new Font("Segoe UI Symbol", 20, FontStyle.Regular, GraphicsUnit.Pixel);
                 var note = "\u266B";
                 var layout = g.MeasureString(note, font);
