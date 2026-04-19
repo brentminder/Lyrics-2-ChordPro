@@ -440,6 +440,9 @@ namespace Lyrics_2_ChordPro
 
             _suppressLivePrompterEvents = true;
 
+            var allsongs = lbSetlists.SelectedIndex == 0;
+            lbSongs.SelectionMode = allsongs ? SelectionMode.One : SelectionMode.MultiExtended;
+
             txtSetlistName.Text = lbSetlists.SelectedIndex > 0 ? lbSetlists.SelectedItem?.ToString() ?? string.Empty : string.Empty;
             RefreshLivePrompterUtils();
 
