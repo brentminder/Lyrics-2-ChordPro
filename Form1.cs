@@ -391,7 +391,7 @@ namespace Lyrics_2_ChordPro
             LoadSongList();
             if (lbSetlists.SelectedIndex == 0 && rbSongsByArtist.Checked) //LoadSongList will load in title order
                 SortSongs();
-        }   
+        }
 
         private void lbSetlists_SelectedIndexChanged(object sender, EventArgs e) {
             if (_suppressLivePrompterEvents)
@@ -491,7 +491,7 @@ namespace Lyrics_2_ChordPro
             _suppressLivePrompterEvents = true;
 
             var byArtist = rbSongsByArtist.Checked;
-            if (byArtist) { 
+            if (byArtist) {
                 // swap title and artist, sort, then display
                 var swapped = _songsByTitle.Select(song => {
                     var parts = song.Split(new[] { " - " }, StringSplitOptions.None);
@@ -507,15 +507,15 @@ namespace Lyrics_2_ChordPro
                 foreach (var song in swapped) {
                     lbSongs.Items.Add(song);
                 }
-            }         
-            else { 
+            }
+            else {
                 lbSongs.Items.Clear();
                 _songsByTitle.Sort(StringComparer.OrdinalIgnoreCase);
                 foreach (var song in _songsByTitle) {
                     lbSongs.Items.Add(song);
                 }
             }
-            _suppressLivePrompterEvents = false;         
+            _suppressLivePrompterEvents = false;
         }
 
         private void txtSongFilter_TextChanged(object sender, EventArgs e) {
@@ -864,10 +864,119 @@ namespace Lyrics_2_ChordPro
             return form.ShowDialog() == DialogResult.OK ? textBox.Text : null;
         }
 
+        private void lbSongs_MouseDown(object sender, MouseEventArgs e) {
+
+            if (e.Button != MouseButtons.Right)
+                return; // Only handle right-clicks
+
+            if (lbSongs.SelectedIndices.Count == 0) {
+                MessageBox.Show("Please select at least one song to add to a setlist.", "No Songs Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var selectedSongs = lbSongs.SelectedItems.Cast<string>().ToList();
+
+            // Get all available setlists (excluding "-All Songs-")
+            var availableSetlists = lbSetlists.Items.Cast<string>()
+                .Where(s => s != NoSetlist)
+                .ToList();
+
+            if (availableSetlists.Count == 0) {
+                MessageBox.Show("No setlists available. Please create a setlist first.", "No Setlists", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            using (var form = new AddToSetlist(selectedSongs, availableSetlists)) {
+                // Position form to the right of the mouse click
+                var screenPos = lbSongs.PointToScreen(e.Location);
+                var screenBounds = Screen.GetBounds(screenPos);
+                var formWidth = form.Width;
+
+                var x = screenPos.X + 10; // Offset slightly to the right
+                if (x + formWidth > screenBounds.Right) {
+                    x = screenPos.X - formWidth - 10; // Move to the left if it goes off-screen
+                }
+
+                var y = screenPos.Y;
+                if (y + form.Height > screenBounds.Bottom) {
+                    y = screenBounds.Bottom - form.Height; // Adjust vertically if needed
+                }
+
+                form.Location = new Point(Math.Max(screenBounds.Left, x), Math.Max(screenBounds.Top, y));
+
+                if (form.ShowDialog(this) == DialogResult.OK) {
+                    var targetSetlist = form.GetSelectedSetlist();
+                    if (string.IsNullOrWhiteSpace(targetSetlist)) {
+                        return;
+                    }
+
+                    AddSongsToSetlist(targetSetlist, selectedSongs);
+                }
+            }
+
+        }
+
+        private void AddSongsToSetlist(string setlistName, List<string> songsToAdd) {
+            var songFolder = txtChordProSongsFolder.Text;
+            if (string.IsNullOrWhiteSpace(songFolder) || !Directory.Exists(songFolder)) {
+                MessageBox.Show("Song folder is not valid.", "Invalid Folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var setlistFolder = Path.Combine(songFolder, "Setlists");
+            var setlistFile = Path.Combine(setlistFolder, setlistName + ".txt");
+
+            if (!File.Exists(setlistFile)) {
+                MessageBox.Show($"Setlist '{setlistName}' not found.", "Setlist Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try {
+                // Read existing songs from the setlist
+                var existingSongs = File.ReadAllLines(setlistFile)
+                    .Where(line => !string.IsNullOrWhiteSpace(line))
+                    .ToList();
+
+                // Convert selected songs to proper format (swap back from artist-title if needed)
+                var songsToAddFormatted = songsToAdd.Select(song => {
+                    if (rbSongsByArtist.Checked) {
+                        var parts = song.Split(new[] { " - " }, StringSplitOptions.None);
+                        if (parts.Length == 2) {
+                            return parts[1].Trim() + " - " + parts[0].Trim();
+                        }
+                    }
+                    return song;
+                }).ToList();
+
+                // Add new songs, avoiding duplicates
+                var combinedSongs = new HashSet<string>(existingSongs);
+                var addedCount = 0;
+                foreach (var song in songsToAddFormatted) {
+                    if (combinedSongs.Add(song)) {
+                        addedCount++;
+                    }
+                }
+
+                // Write back to file
+                File.WriteAllLines(setlistFile, combinedSongs);
+
+                var message = addedCount == songsToAddFormatted.Count
+                    ? $"All {addedCount} song(s) added to '{setlistName}' successfully."
+                    : $"{addedCount} song(s) added to '{setlistName}' successfully. ({songsToAddFormatted.Count - addedCount} were already in the setlist.)";
+
+                MessageBox.Show(message, "Songs Added", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Refresh the current view if we're looking at the target setlist
+                if (lbSetlists.SelectedItem?.ToString() == setlistName) {
+                    RefreshLivePrompterUtils();
+                }
+            }
+            catch (Exception ex) {
+                MessageBox.Show($"Error adding songs to setlist: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         #endregion
-
-
-
 
 
     }
