@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-
-namespace Lyrics_2_ChordPro
+﻿namespace Lyrics_2_ChordPro
 {
     public partial class AddToSetlist : Form
     {
@@ -33,9 +25,6 @@ namespace Lyrics_2_ChordPro
             foreach (var setlist in _availableSetlists) {
                 lbSetlists.Items.Add(setlist);
             }
-            //if (lbSetlists.Items.Count > 0) {
-            //    lbSetlists.SelectedIndex = 0;
-            //}
         }
 
         public string GetSelectedSetlist() {

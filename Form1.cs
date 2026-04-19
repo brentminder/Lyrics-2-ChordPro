@@ -1,7 +1,7 @@
-using System.Globalization;
-using System.Text;
-using System.Runtime.InteropServices;
 using Microsoft.Win32;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Lyrics_2_ChordPro
 {
