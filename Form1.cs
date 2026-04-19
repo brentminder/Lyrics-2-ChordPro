@@ -389,8 +389,16 @@ namespace Lyrics_2_ChordPro
         private void RefreshLivePrompterUtils() {
             ClearSongs();
             LoadSongList();
-            if (lbSetlists.SelectedIndex == 0 && rbSongsByArtist.Checked) //LoadSongList will load in title order
+            var allsongs = lbSetlists.SelectedIndex == 0;
+            btnDeleteSetlistSongs.Enabled = !allsongs;
+            btnSaveSetlistSongs.Enabled = !allsongs;
+
+            if (allsongs && rbSongsByArtist.Checked) //LoadSongList will load in title order
                 SortSongs();
+        }
+
+        private void btnSaveSetlistSongs_Click(object sender, EventArgs e) {
+
         }
 
         private void lbSetlists_SelectedIndexChanged(object sender, EventArgs e) {
@@ -692,7 +700,6 @@ namespace Lyrics_2_ChordPro
 
                 File.Copy(sourcePath, destPath);
                 PopulateSetlists();
-                MessageBox.Show($"Setlist cloned successfully as '{newName}'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex) {
                 MessageBox.Show($"Error cloning setlist: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -702,8 +709,18 @@ namespace Lyrics_2_ChordPro
         private void txtSavedLyrics_TextChanged(object sender, EventArgs e) {
             btnSaveSong.Enabled = true;
         }
-
         private void btnDeleteSetlist_Click(object sender, EventArgs e) {
+            DeleteSetlist();
+        }
+
+        private void lbSetlists_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Delete) {
+                DeleteSetlist();
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
+        private void DeleteSetlist() {
             var selectedSetlist = lbSetlists.SelectedItem?.ToString();
             if (string.IsNullOrWhiteSpace(selectedSetlist) || selectedSetlist == NoSetlist) {
                 MessageBox.Show("Please select a setlist to delete.", "No Setlist Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -733,7 +750,6 @@ namespace Lyrics_2_ChordPro
                     File.Delete(setlistFile);
                 }
                 PopulateSetlists();
-                MessageBox.Show("Setlist deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex) {
                 MessageBox.Show($"Error deleting setlist: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -778,19 +794,19 @@ namespace Lyrics_2_ChordPro
         }
 
         private void btnDeleteSong_Click(object sender, EventArgs e) {
-            if (lbSongs.SelectedIndices.Count == 0) {
-                MessageBox.Show("Please select at least one song to delete.", "No Song Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+            DeleteSongs();
+        }
+
+        private void lbSongs_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Delete) {
+                DeleteSongs();
+                e.Handled = true;
+                e.SuppressKeyPress = true;
             }
+        }
 
-            var result = MessageBox.Show(
-                $"Delete {lbSongs.SelectedIndices.Count} song(s) from this setlist?",
-                "Confirm Delete",
-                MessageBoxButtons.OKCancel,
-                MessageBoxIcon.Question,
-                MessageBoxDefaultButton.Button2);
-
-            if (result != DialogResult.OK) {
+        private void DeleteSongs() {
+            if (lbSongs.SelectedIndices.Count == 0) {
                 return;
             }
 
@@ -977,6 +993,9 @@ namespace Lyrics_2_ChordPro
         }
 
         #endregion
+
+
+
 
 
     }
