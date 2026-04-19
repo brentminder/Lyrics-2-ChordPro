@@ -1078,7 +1078,8 @@ namespace Lyrics_2_ChordPro
             var draggedIndices = new List<int>();
             foreach (var song in draggedSongs) {
                 var idx = allItems.IndexOf(song);
-                if (idx >= 0) draggedIndices.Add(idx);
+                if (idx >= 0)
+                    draggedIndices.Add(idx);
             }
             draggedIndices.Sort();
 
@@ -1089,10 +1090,13 @@ namespace Lyrics_2_ChordPro
             // Adjust drop index for removed items above it
             var adjustedDrop = dropIndex;
             foreach (var idx in draggedIndices) {
-                if (idx < dropIndex) adjustedDrop--;
+                if (idx < dropIndex)
+                    adjustedDrop--;
             }
-            if (adjustedDrop < 0) adjustedDrop = 0;
-            if (adjustedDrop > allItems.Count) adjustedDrop = allItems.Count;
+            if (adjustedDrop < 0)
+                adjustedDrop = 0;
+            if (adjustedDrop > allItems.Count)
+                adjustedDrop = allItems.Count;
 
             // Insert dragged items at the drop position
             allItems.InsertRange(adjustedDrop, draggedSongs);
@@ -1106,7 +1110,8 @@ namespace Lyrics_2_ChordPro
             // Re-select the moved items
             foreach (var song in draggedSongs) {
                 var newIdx = lbSongs.Items.IndexOf(song);
-                if (newIdx >= 0) lbSongs.SetSelected(newIdx, true);
+                if (newIdx >= 0)
+                    lbSongs.SetSelected(newIdx, true);
             }
             lbSongs.EndUpdate();
         }
@@ -1181,12 +1186,51 @@ namespace Lyrics_2_ChordPro
                 MessageBox.Show($"Error adding songs to setlist: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        private void lbSongs_DoubleClick(object sender, EventArgs e) {
+            //open the song file in the default text editor on double-click
+            if (lbSongs.SelectedIndex < 0) {
+                return;
+            }
 
+            var songFile = lbSongs.SelectedItem.ToString() + ".txt";
+            var songFilepath = Path.Combine(txtChordProSongsFolder.Text, songFile);
+
+            if (!File.Exists(songFilepath)) {
+                MessageBox.Show($"Song file '{songFilepath}' not found.", "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo {
+                    FileName = songFilepath,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex) {
+                MessageBox.Show($"Error opening song file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         #endregion
 
+        private void lbSetlists_DoubleClick(object sender, EventArgs e) {
+            if (lbSetlists.SelectedIndex < 1) 
+                return;
 
+            var setlistFile = Path.Combine(txtChordProSongsFolder.Text, "Setlists", lbSetlists.SelectedItem.ToString() + ".txt");
+            if (!File.Exists(setlistFile)) {
+                MessageBox.Show($"Setlist file '{setlistFile}' not found.", "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-
-
+            try {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo {
+                    FileName = setlistFile,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex) {
+                MessageBox.Show($"Error opening setlist file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }
