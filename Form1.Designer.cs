@@ -71,7 +71,7 @@
             rbSongsByArtist = new RadioButton();
             rbSongsByTitle = new RadioButton();
             btnDeleteSetlistSongs = new Button();
-            lbSongs = new ListBox();
+            lbSongs = new DragReorderListBox();
             label11 = new Label();
             txtSavedLyrics = new TextBox();
             btnSaveSong = new Button();
@@ -700,9 +700,13 @@
             lbSongs.Name = "lbSongs";
             lbSongs.Size = new Size(318, 636);
             lbSongs.TabIndex = 14;
+            lbSongs.AllowDrop = true;
             lbSongs.SelectedIndexChanged += lbSongs_SelectedIndexChanged;
             lbSongs.KeyDown += lbSongs_KeyDown;
             lbSongs.MouseDown += lbSongs_MouseDown;
+            lbSongs.MouseMove += lbSongs_MouseMove;
+            lbSongs.DragOver += lbSongs_DragOver;
+            lbSongs.DragDrop += lbSongs_DragDrop;
             // 
             // label11
             // 
@@ -943,7 +947,7 @@
         private Button btnDeleteSetlist;
         private Button btnSaveSetlist;
         private SplitContainer splitContainer2;
-        private ListBox lbSongs;
+        private DragReorderListBox lbSongs;
         private Label label11;
         private Label label12;
         private Button btnSaveSong;

@@ -12,6 +12,10 @@ namespace Lyrics_2_ChordPro
         private const string NoSetlist = "-All Songs-";
         private List<string> _songsByTitle = new();
 
+        // Drag-and-drop reorder state for lbSongs
+        private Point _dragStartPoint;
+        private bool _dragInProgress;
+
         public Form1() {
             InitializeComponent();
             // try to use a project-provided icon (note.ico) so the pinned app has a proper icon;
@@ -442,6 +446,7 @@ namespace Lyrics_2_ChordPro
 
             var allsongs = lbSetlists.SelectedIndex == 0;
             lbSongs.SelectionMode = allsongs ? SelectionMode.One : SelectionMode.MultiExtended;
+            lbSongs.DragReorderEnabled = !allsongs;
 
             txtSetlistName.Text = lbSetlists.SelectedIndex > 0 ? lbSetlists.SelectedItem?.ToString() ?? string.Empty : string.Empty;
             RefreshLivePrompterUtils();
@@ -918,6 +923,12 @@ namespace Lyrics_2_ChordPro
 
         private void lbSongs_MouseDown(object sender, MouseEventArgs e) {
 
+            // Track left-click start for drag-and-drop reorder in setlist mode
+            if (e.Button == MouseButtons.Left && lbSetlists.SelectedIndex > 0) {
+                _dragStartPoint = e.Location;
+                _dragInProgress = false;
+            }
+
             if (e.Button != MouseButtons.Right)
                 return; // Only handle right-clicks
 
@@ -966,6 +977,77 @@ namespace Lyrics_2_ChordPro
                 }
             }
 
+        }
+
+        private void lbSongs_MouseMove(object sender, MouseEventArgs e) {
+            if (e.Button != MouseButtons.Left || lbSetlists.SelectedIndex <= 0 || lbSongs.SelectedItems.Count == 0)
+                return;
+
+            if (!_dragInProgress && (Math.Abs(e.X - _dragStartPoint.X) > SystemInformation.DragSize.Width ||
+                                     Math.Abs(e.Y - _dragStartPoint.Y) > SystemInformation.DragSize.Height)) {
+                _dragInProgress = true;
+                var selected = lbSongs.SelectedItems.Cast<string>().ToList();
+                lbSongs.DoDragDrop(selected, DragDropEffects.Move);
+                _dragInProgress = false;
+            }
+        }
+
+        private void lbSongs_DragOver(object sender, DragEventArgs e) {
+            if (lbSetlists.SelectedIndex > 0 && e.Data?.GetDataPresent(typeof(List<string>)) == true)
+                e.Effect = DragDropEffects.Move;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void lbSongs_DragDrop(object sender, DragEventArgs e) {
+            if (lbSetlists.SelectedIndex <= 0)
+                return;
+
+            if (e.Data?.GetData(typeof(List<string>)) is not List<string> draggedSongs || draggedSongs.Count == 0)
+                return;
+
+            // Determine drop index from mouse position
+            var clientPoint = lbSongs.PointToClient(new Point(e.X, e.Y));
+            var dropIndex = lbSongs.IndexFromPoint(clientPoint);
+            if (dropIndex < 0)
+                dropIndex = lbSongs.Items.Count; // drop at end
+
+            // Collect all items and the original indices of dragged items
+            var allItems = lbSongs.Items.Cast<string>().ToList();
+            var draggedIndices = new List<int>();
+            foreach (var song in draggedSongs) {
+                var idx = allItems.IndexOf(song);
+                if (idx >= 0) draggedIndices.Add(idx);
+            }
+            draggedIndices.Sort();
+
+            // Remove dragged items (reverse order to preserve indices)
+            for (var i = draggedIndices.Count - 1; i >= 0; i--)
+                allItems.RemoveAt(draggedIndices[i]);
+
+            // Adjust drop index for removed items above it
+            var adjustedDrop = dropIndex;
+            foreach (var idx in draggedIndices) {
+                if (idx < dropIndex) adjustedDrop--;
+            }
+            if (adjustedDrop < 0) adjustedDrop = 0;
+            if (adjustedDrop > allItems.Count) adjustedDrop = allItems.Count;
+
+            // Insert dragged items at the drop position
+            allItems.InsertRange(adjustedDrop, draggedSongs);
+
+            // Rebuild the listbox
+            lbSongs.BeginUpdate();
+            lbSongs.Items.Clear();
+            foreach (var item in allItems)
+                lbSongs.Items.Add(item);
+
+            // Re-select the moved items
+            foreach (var song in draggedSongs) {
+                var newIdx = lbSongs.Items.IndexOf(song);
+                if (newIdx >= 0) lbSongs.SetSelected(newIdx, true);
+            }
+            lbSongs.EndUpdate();
         }
 
         private void AddSongsToSetlist(string setlistName, List<string> songsToAdd) {
