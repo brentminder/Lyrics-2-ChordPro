@@ -9,6 +9,9 @@ namespace Lyrics_2_ChordPro
     {
         private bool _normalizingOriginalLyrics;
 
+        private const string NoSetlist = "-All Songs-";
+        private List<string> _songsByTitle = new();
+
         public Form1() {
             InitializeComponent();
             // try to use a project-provided icon (note.ico) so the pinned app has a proper icon;
@@ -357,7 +360,7 @@ namespace Lyrics_2_ChordPro
 
             _suppressLivePrompterEvents = true;
             lbSetlists.Items.Clear();
-            lbSetlists.Items.Add("None (All Songs)");
+            lbSetlists.Items.Add(NoSetlist);
 
             try {
                 if (Directory.Exists(setlistFolder)) {
@@ -366,8 +369,8 @@ namespace Lyrics_2_ChordPro
                         .OrderBy(name => name)
                         .ToList();
 
-                    foreach (var name in setlistFiles) {
-                        lbSetlists.Items.Add(name);
+                    foreach (var file in setlistFiles) {
+                        lbSetlists.Items.Add(file);
                     }
                 }
             }
@@ -385,8 +388,9 @@ namespace Lyrics_2_ChordPro
 
         private void RefreshLivePrompterUtils() {
             ClearSongs();
-            LoadSongs();
-            ReloadSongs();
+            LoadSongList();
+            if (lbSetlists.SelectedIndex == 0 && rbSongsByArtist.Checked) //LoadSongList will load in title order
+                SortSongs();
         }   
 
         private void lbSetlists_SelectedIndexChanged(object sender, EventArgs e) {
@@ -401,7 +405,7 @@ namespace Lyrics_2_ChordPro
             _suppressLivePrompterEvents = false;
         }
 
-        private void LoadSongs() {
+        private void LoadSongList() {
             var selectedSetlist = lbSetlists.SelectedItem?.ToString();
             if (string.IsNullOrWhiteSpace(selectedSetlist)) {
                 return;
@@ -413,17 +417,12 @@ namespace Lyrics_2_ChordPro
             }
 
             try {
-                if (selectedSetlist == "None (All Songs)") {
+                if (selectedSetlist == NoSetlist) {
                     rbSongsByTitle.Enabled = true;
                     rbSongsByArtist.Enabled = true;
 
-                    // load all .txt files from song folder
-                    var songFiles = Directory.GetFiles(songFolder, "*.txt")
-                        .Where(f => Path.GetDirectoryName(f) == songFolder)
-                        .Select(f => Path.GetFileNameWithoutExtension(f))
-                        .ToList();
-
-                    foreach (var song in songFiles) {
+                    LoadSongsByTitle(songFolder);
+                    foreach (var song in _songsByTitle) {
                         lbSongs.Items.Add(song);
                     }
                 }
@@ -433,6 +432,7 @@ namespace Lyrics_2_ChordPro
                     if (File.Exists(setlistFile)) {
                         var lines = File.ReadAllLines(setlistFile)
                             .Where(line => !string.IsNullOrWhiteSpace(line))
+                            //.OrderBy DO NOT ORDER SETLISTS!!! order is set by user
                             .ToList();
 
                         foreach (var line in lines) {
@@ -446,15 +446,20 @@ namespace Lyrics_2_ChordPro
             }
         }
 
-        private void ReloadSongs() {
-            if (lbSetlists.SelectedIndex > 0)
-                return; //only alphabetize on the "All Songs" view, otherwise we mess up the setlist order
-
-            if (rbSongsByTitle.Checked) {
-                SortSongsByTitle();
+        private void LoadSongsByTitle(string songFolder) {
+            if (string.IsNullOrWhiteSpace(songFolder) || !Directory.Exists(songFolder)) {
+                return;
             }
-            else if (rbSongsByArtist.Checked) {
-                SortSongsByArtist();
+            try {
+                _songsByTitle.Clear();
+                _songsByTitle.AddRange(Directory.GetFiles(songFolder, "*.txt")
+                    .Where(f => Path.GetDirectoryName(f) == songFolder)
+                    .Select(f => Path.GetFileNameWithoutExtension(f))
+                    .OrderBy(n => n, StringComparer.OrdinalIgnoreCase)
+                    .ToList());
+            }
+            catch {
+                // ignore errors reading songs
             }
         }
 
@@ -469,55 +474,48 @@ namespace Lyrics_2_ChordPro
         }
 
         private void rbSongsByTitle_CheckedChanged(object sender, EventArgs e) {
-            if (!rbSongsByTitle.Checked || _suppressLivePrompterEvents)
+            if (_suppressLivePrompterEvents)
                 return;
 
-            _suppressLivePrompterEvents = true;
-            SortSongsByTitle();
-            _suppressLivePrompterEvents = false;
+            SortSongs();
         }
 
         private void rbSongsByArtist_CheckedChanged(object sender, EventArgs e) {
-            if (!rbSongsByArtist.Checked || _suppressLivePrompterEvents)
+            if (_suppressLivePrompterEvents)
                 return;
 
-            _suppressLivePrompterEvents = true;
-            SortSongsByArtist();
-            _suppressLivePrompterEvents = false;
+            SortSongs();
         }
 
-        private void SortSongsByTitle() {
-            var songs = lbSongs.Items.Cast<string>().ToList();
-            songs.Sort(StringComparer.OrdinalIgnoreCase);
-
+        private void SortSongs() {
             _suppressLivePrompterEvents = true;
-            lbSongs.Items.Clear();
-            foreach (var song in songs) {
-                lbSongs.Items.Add(song);
-            }
-            _suppressLivePrompterEvents = false;
-        }
 
-        private void SortSongsByArtist() {
-            var songs = lbSongs.Items.Cast<string>().ToList();
+            var byArtist = rbSongsByArtist.Checked;
+            if (byArtist) { 
+                // swap title and artist, sort, then display
+                var swapped = _songsByTitle.Select(song => {
+                    var parts = song.Split(new[] { " - " }, StringSplitOptions.None);
+                    if (parts.Length == 2) {
+                        return parts[1].Trim() + " - " + parts[0].Trim();
+                    }
+                    return song;
+                }).ToList();
 
-            // swap title and artist, sort, then display
-            var swapped = songs.Select(song => {
-                var parts = song.Split(new[] { " - " }, StringSplitOptions.None);
-                if (parts.Length == 2) {
-                    return parts[1].Trim() + " - " + parts[0].Trim();
+                swapped.Sort(StringComparer.OrdinalIgnoreCase);
+
+                lbSongs.Items.Clear();
+                foreach (var song in swapped) {
+                    lbSongs.Items.Add(song);
                 }
-                return song;
-            }).ToList();
-
-            swapped.Sort(StringComparer.OrdinalIgnoreCase);
-
-            _suppressLivePrompterEvents = true;
-            lbSongs.Items.Clear();
-            foreach (var song in swapped) {
-                lbSongs.Items.Add(song);
+            }         
+            else { 
+                lbSongs.Items.Clear();
+                _songsByTitle.Sort(StringComparer.OrdinalIgnoreCase);
+                foreach (var song in _songsByTitle) {
+                    lbSongs.Items.Add(song);
+                }
             }
-            _suppressLivePrompterEvents = false;
+            _suppressLivePrompterEvents = false;         
         }
 
         private void txtSongFilter_TextChanged(object sender, EventArgs e) {
@@ -541,7 +539,7 @@ namespace Lyrics_2_ChordPro
             try {
                 List<string> allSongs = new();
 
-                if (selectedSetlist == "None (All Songs)") {
+                if (selectedSetlist == NoSetlist) {
                     var songFiles = Directory.GetFiles(songFolder, "*.txt")
                         .Where(f => Path.GetDirectoryName(f) == songFolder)
                         .Select(f => Path.GetFileNameWithoutExtension(f))
@@ -662,7 +660,7 @@ namespace Lyrics_2_ChordPro
 
         private void btnCloneSetlist_Click(object sender, EventArgs e) {
             var selectedSetlist = lbSetlists.SelectedItem?.ToString();
-            if (string.IsNullOrWhiteSpace(selectedSetlist) || selectedSetlist == "None (All Songs)") {
+            if (string.IsNullOrWhiteSpace(selectedSetlist) || selectedSetlist == NoSetlist) {
                 MessageBox.Show("Please select a setlist to clone.", "No Setlist Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -707,7 +705,7 @@ namespace Lyrics_2_ChordPro
 
         private void btnDeleteSetlist_Click(object sender, EventArgs e) {
             var selectedSetlist = lbSetlists.SelectedItem?.ToString();
-            if (string.IsNullOrWhiteSpace(selectedSetlist) || selectedSetlist == "None (All Songs)") {
+            if (string.IsNullOrWhiteSpace(selectedSetlist) || selectedSetlist == NoSetlist) {
                 MessageBox.Show("Please select a setlist to delete.", "No Setlist Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -744,7 +742,7 @@ namespace Lyrics_2_ChordPro
 
         private void btnSaveSetlist_Click(object sender, EventArgs e) {
             var selectedSetlist = lbSetlists.SelectedItem?.ToString();
-            if (string.IsNullOrWhiteSpace(selectedSetlist) || selectedSetlist == "None (All Songs)") {
+            if (string.IsNullOrWhiteSpace(selectedSetlist) || selectedSetlist == NoSetlist) {
                 MessageBox.Show("Please select a setlist to save.", "No Setlist Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
