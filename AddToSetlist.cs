@@ -31,18 +31,26 @@
             return lbSetlists.SelectedItem?.ToString() ?? string.Empty;
         }
 
-        private void btnOK_Click(object sender, EventArgs e) {
+        private void ok() {
             if (lbSetlists.SelectedIndex < 0) {
                 MessageBox.Show("Please select a setlist.", "No Setlist Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             this.DialogResult = DialogResult.OK;
             this.Close();
+        } 
+
+        private void btnOK_Click(object sender, EventArgs e) {
+            ok();
         }
 
         private void btnCancel_Click(object sender, EventArgs e) {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void lbSetlists_DoubleClick(object sender, EventArgs e) {
+            ok();
         }
     }
 }

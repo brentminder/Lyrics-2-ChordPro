@@ -741,6 +741,37 @@ namespace Lyrics_2_ChordPro
             }
         }
 
+        private void btnRefreshFiles_Click(object sender, EventArgs e) {
+            PopulateSetlists();
+        }
+
+        private void btnPasteTemplate_Click(object sender, EventArgs e) {
+            txtOriginalLyrics.Text =
+                """
+                Lyrics of Song by Artist
+                Intro
+                    The opening section that sets the mood before the vocals start.
+                Verse
+                    The storytelling part that changes lyrics each time it repeats.
+                Pre-Chorus
+                    A short building section that connects the verse to the main chorus.
+                Chorus
+                    The main catchy part of the song that repeats with the same lyrics and message.
+                Interlude
+                    A short musical break between sections of a song.
+                Hook
+                    A catchy musical or lyrical phrase that grabs the listener's attention.
+                Bridge
+                    A contrasting middle section that breaks up the repetition of the song.
+                Refrain
+                    A repeated short line or phrase that appears at the end of a verse.
+                Guitar Solo
+                    An instrumental feature where the guitar plays a prominent expressive melody.
+                Outro
+                    The ending section that brings the song to a close.
+                """;
+        }
+
         private void btnAddNewSetlist_Click(object sender, EventArgs e) {
             var songFolder = txtChordProSongsFolder.Text;
             if (string.IsNullOrWhiteSpace(songFolder) || !Directory.Exists(songFolder)) {
@@ -872,7 +903,7 @@ namespace Lyrics_2_ChordPro
 
             try {
                 var originalSetlist = selectedSetlist;
-                if (txtSetlistName.Text.Length > 0) 
+                if (txtSetlistName.Text.Length > 0)
                     selectedSetlist = txtSetlistName.Text;
 
                 var setlistFolder = Path.Combine(songFolder, "Setlists");
@@ -1228,7 +1259,7 @@ namespace Lyrics_2_ChordPro
         #endregion
 
         private void lbSetlists_DoubleClick(object sender, EventArgs e) {
-            if (lbSetlists.SelectedIndex < 1) 
+            if (lbSetlists.SelectedIndex < 1)
                 return;
 
             var setlistFile = Path.Combine(txtChordProSongsFolder.Text, "Setlists", lbSetlists.SelectedItem.ToString() + ".txt");
@@ -1247,5 +1278,7 @@ namespace Lyrics_2_ChordPro
                 MessageBox.Show($"Error opening setlist file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
     }
 }

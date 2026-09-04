@@ -53,6 +53,7 @@
             lbSetlists.Name = "lbSetlists";
             lbSetlists.Size = new Size(201, 144);
             lbSetlists.TabIndex = 1;
+            lbSetlists.DoubleClick += lbSetlists_DoubleClick;
             // 
             // btnOK
             // 
