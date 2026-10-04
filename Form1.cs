@@ -273,6 +273,13 @@ namespace Lyrics_2_ChordPro
             txtMinutes.Text = "5";
         }
 
+        private void btnMinute6_Click(object sender, EventArgs e) {
+            txtMinutes.Text = "6";
+        }
+        private void updownSeconds_ValueChanged(object sender, EventArgs e) {
+            txtSeconds.Text = updownSeconds.Value.ToString("00");
+        }
+
         private void txtSeconds_UpDown(object sender, KeyEventArgs e) {
             if (!int.TryParse(txtSeconds.Text, out var seconds))
                 seconds = 0;
@@ -576,6 +583,8 @@ namespace Lyrics_2_ChordPro
 
         private void ClearSongs() {
             _suppressLivePrompterEvents = true;
+            txtMinutes.Text = "4";
+            txtSeconds.Text = "00";
             lbSongs.Items.Clear();
             txtSavedLyrics.Clear();
             btnSaveSong.Enabled = false;
@@ -1310,5 +1319,6 @@ namespace Lyrics_2_ChordPro
                 MessageBox.Show($"Error opening folder: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
     }
 }
