@@ -42,6 +42,7 @@
             btnMinute2 = new Button();
             label4 = new Label();
             panel2 = new Panel();
+            btnBrowseFolderLyrics = new Button();
             btnCopy = new Button();
             txtArtist = new TextBox();
             label8 = new Label();
@@ -55,6 +56,7 @@
             linkAzLyrics = new LinkLabel();
             tabControl1 = new TabControl();
             tabLivePrompterUtils = new TabPage();
+            btnBrowseFolderUtils = new Button();
             btnRefreshFiles = new Button();
             splitContainer1 = new SplitContainer();
             btnCloneSetlist = new Button();
@@ -81,9 +83,9 @@
             label1 = new Label();
             tabLyricsToChordPro = new TabPage();
             splitMain = new SplitContainer();
+            btnPasteTemplate = new Button();
             splitChild = new SplitContainer();
             linkGenius = new LinkLabel();
-            btnPasteTemplate = new Button();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             tabControl1.SuspendLayout();
@@ -127,7 +129,7 @@
             txtOriginalLyrics.Multiline = true;
             txtOriginalLyrics.Name = "txtOriginalLyrics";
             txtOriginalLyrics.ScrollBars = ScrollBars.Both;
-            txtOriginalLyrics.Size = new Size(421, 721);
+            txtOriginalLyrics.Size = new Size(417, 711);
             txtOriginalLyrics.TabIndex = 2;
             txtOriginalLyrics.WordWrap = false;
             txtOriginalLyrics.TextChanged += txtOriginalLyrics_TextChanged;
@@ -139,7 +141,7 @@
             btnRefreshLyrics.Font = new Font("Segoe UI", 12F);
             btnRefreshLyrics.Location = new Point(8, 6);
             btnRefreshLyrics.Name = "btnRefreshLyrics";
-            btnRefreshLyrics.Size = new Size(139, 39);
+            btnRefreshLyrics.Size = new Size(121, 39);
             btnRefreshLyrics.TabIndex = 3;
             btnRefreshLyrics.Text = "&Refresh";
             btnRefreshLyrics.UseVisualStyleBackColor = true;
@@ -154,7 +156,7 @@
             txtFormattedLyrics.Multiline = true;
             txtFormattedLyrics.Name = "txtFormattedLyrics";
             txtFormattedLyrics.ScrollBars = ScrollBars.Both;
-            txtFormattedLyrics.Size = new Size(540, 721);
+            txtFormattedLyrics.Size = new Size(535, 711);
             txtFormattedLyrics.TabIndex = 4;
             txtFormattedLyrics.WordWrap = false;
             // 
@@ -183,7 +185,7 @@
             panel1.Controls.Add(label4);
             panel1.Location = new Point(9, 301);
             panel1.Name = "panel1";
-            panel1.Size = new Size(308, 116);
+            panel1.Size = new Size(290, 116);
             panel1.TabIndex = 6;
             // 
             // btnMinute3
@@ -293,6 +295,7 @@
             // 
             panel2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panel2.BorderStyle = BorderStyle.Fixed3D;
+            panel2.Controls.Add(btnBrowseFolderLyrics);
             panel2.Controls.Add(btnCopy);
             panel2.Controls.Add(txtArtist);
             panel2.Controls.Add(label8);
@@ -302,15 +305,28 @@
             panel2.Controls.Add(label9);
             panel2.Location = new Point(8, 94);
             panel2.Name = "panel2";
-            panel2.Size = new Size(309, 201);
+            panel2.Size = new Size(291, 201);
             panel2.TabIndex = 11;
+            // 
+            // btnBrowseFolderLyrics
+            // 
+            btnBrowseFolderLyrics.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnBrowseFolderLyrics.Cursor = Cursors.Hand;
+            btnBrowseFolderLyrics.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            btnBrowseFolderLyrics.Location = new Point(246, 35);
+            btnBrowseFolderLyrics.Name = "btnBrowseFolderLyrics";
+            btnBrowseFolderLyrics.Size = new Size(31, 22);
+            btnBrowseFolderLyrics.TabIndex = 15;
+            btnBrowseFolderLyrics.Text = ". . .";
+            btnBrowseFolderLyrics.UseVisualStyleBackColor = true;
+            btnBrowseFolderLyrics.Click += btnBrowseFolderLyrics_Click;
             // 
             // btnCopy
             // 
             btnCopy.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnCopy.Cursor = Cursors.Hand;
             btnCopy.Font = new Font("Segoe UI", 8F);
-            btnCopy.Location = new Point(244, 71);
+            btnCopy.Location = new Point(226, 71);
             btnCopy.Name = "btnCopy";
             btnCopy.Size = new Size(51, 21);
             btnCopy.TabIndex = 14;
@@ -326,7 +342,7 @@
             txtArtist.MaxLength = 444;
             txtArtist.Name = "txtArtist";
             txtArtist.PlaceholderText = "artist/band";
-            txtArtist.Size = new Size(282, 25);
+            txtArtist.Size = new Size(264, 25);
             txtArtist.TabIndex = 12;
             // 
             // label8
@@ -347,7 +363,7 @@
             txtTitle.MaxLength = 444;
             txtTitle.Name = "txtTitle";
             txtTitle.PlaceholderText = "song title";
-            txtTitle.Size = new Size(282, 25);
+            txtTitle.Size = new Size(264, 25);
             txtTitle.TabIndex = 10;
             // 
             // label7
@@ -368,7 +384,7 @@
             txtChordProSongsFolder.MaxLength = 444;
             txtChordProSongsFolder.Name = "txtChordProSongsFolder";
             txtChordProSongsFolder.PlaceholderText = "3";
-            txtChordProSongsFolder.Size = new Size(282, 22);
+            txtChordProSongsFolder.Size = new Size(227, 22);
             txtChordProSongsFolder.TabIndex = 8;
             txtChordProSongsFolder.Text = "G:\\My Drive\\musician\\LivePrompter2";
             txtChordProSongsFolder.TextChanged += txtChordProSongsFolder_TextChanged;
@@ -390,7 +406,7 @@
             btnWriteFile.Font = new Font("Segoe UI", 12F);
             btnWriteFile.Location = new Point(7, 49);
             btnWriteFile.Name = "btnWriteFile";
-            btnWriteFile.Size = new Size(139, 39);
+            btnWriteFile.Size = new Size(121, 39);
             btnWriteFile.TabIndex = 12;
             btnWriteFile.Text = "&Write File";
             btnWriteFile.UseVisualStyleBackColor = true;
@@ -401,7 +417,7 @@
             btnPaste.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnPaste.Cursor = Cursors.Hand;
             btnPaste.Font = new Font("Segoe UI", 12F);
-            btnPaste.Location = new Point(268, 5);
+            btnPaste.Location = new Point(264, 5);
             btnPaste.Name = "btnPaste";
             btnPaste.Size = new Size(169, 33);
             btnPaste.TabIndex = 13;
@@ -414,7 +430,7 @@
             linkMusixMatch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             linkMusixMatch.AutoSize = true;
             linkMusixMatch.Font = new Font("Segoe UI", 12F);
-            linkMusixMatch.Location = new Point(220, 15);
+            linkMusixMatch.Location = new Point(215, 15);
             linkMusixMatch.Name = "linkMusixMatch";
             linkMusixMatch.Size = new Size(127, 21);
             linkMusixMatch.TabIndex = 14;
@@ -427,7 +443,7 @@
             linkAzLyrics.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             linkAzLyrics.AutoSize = true;
             linkAzLyrics.Font = new Font("Segoe UI", 12F);
-            linkAzLyrics.Location = new Point(347, 15);
+            linkAzLyrics.Location = new Point(342, 15);
             linkAzLyrics.Name = "linkAzLyrics";
             linkAzLyrics.Size = new Size(101, 21);
             linkAzLyrics.TabIndex = 15;
@@ -443,12 +459,13 @@
             tabControl1.Location = new Point(12, 12);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1340, 812);
+            tabControl1.Size = new Size(1328, 802);
             tabControl1.TabIndex = 16;
             // 
             // tabLivePrompterUtils
             // 
             tabLivePrompterUtils.BackColor = Color.RosyBrown;
+            tabLivePrompterUtils.Controls.Add(btnBrowseFolderUtils);
             tabLivePrompterUtils.Controls.Add(btnRefreshFiles);
             tabLivePrompterUtils.Controls.Add(splitContainer1);
             tabLivePrompterUtils.Controls.Add(txtChordProSongsFolder2);
@@ -456,9 +473,23 @@
             tabLivePrompterUtils.Location = new Point(4, 24);
             tabLivePrompterUtils.Name = "tabLivePrompterUtils";
             tabLivePrompterUtils.Padding = new Padding(3);
-            tabLivePrompterUtils.Size = new Size(1332, 784);
+            tabLivePrompterUtils.Size = new Size(1320, 774);
             tabLivePrompterUtils.TabIndex = 1;
             tabLivePrompterUtils.Text = "Live Prompter2 Utils";
+            // 
+            // btnBrowseFolderUtils
+            // 
+            btnBrowseFolderUtils.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnBrowseFolderUtils.Cursor = Cursors.Hand;
+            btnBrowseFolderUtils.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnBrowseFolderUtils.ForeColor = Color.Black;
+            btnBrowseFolderUtils.Location = new Point(1186, 38);
+            btnBrowseFolderUtils.Name = "btnBrowseFolderUtils";
+            btnBrowseFolderUtils.Size = new Size(36, 29);
+            btnBrowseFolderUtils.TabIndex = 18;
+            btnBrowseFolderUtils.Text = ". . .";
+            btnBrowseFolderUtils.UseVisualStyleBackColor = true;
+            btnBrowseFolderUtils.Click += btnBrowseFolderUtils_Click;
             // 
             // btnRefreshFiles
             // 
@@ -466,7 +497,7 @@
             btnRefreshFiles.Cursor = Cursors.Hand;
             btnRefreshFiles.Font = new Font("Segoe UI", 9F);
             btnRefreshFiles.ForeColor = Color.Black;
-            btnRefreshFiles.Location = new Point(1254, 38);
+            btnRefreshFiles.Location = new Point(1242, 38);
             btnRefreshFiles.Name = "btnRefreshFiles";
             btnRefreshFiles.Size = new Size(72, 29);
             btnRefreshFiles.TabIndex = 17;
@@ -492,8 +523,8 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(splitContainer2);
-            splitContainer1.Size = new Size(1326, 708);
-            splitContainer1.SplitterDistance = 299;
+            splitContainer1.Size = new Size(1314, 698);
+            splitContainer1.SplitterDistance = 296;
             splitContainer1.SplitterWidth = 9;
             splitContainer1.TabIndex = 11;
             // 
@@ -503,7 +534,7 @@
             btnCloneSetlist.Cursor = Cursors.Hand;
             btnCloneSetlist.Font = new Font("Segoe UI", 9F);
             btnCloneSetlist.ForeColor = Color.Black;
-            btnCloneSetlist.Location = new Point(107, 2);
+            btnCloneSetlist.Location = new Point(104, 2);
             btnCloneSetlist.Name = "btnCloneSetlist";
             btnCloneSetlist.Size = new Size(82, 23);
             btnCloneSetlist.TabIndex = 16;
@@ -517,7 +548,7 @@
             btnAddNewSetlist.Cursor = Cursors.Hand;
             btnAddNewSetlist.Font = new Font("Segoe UI", 9F);
             btnAddNewSetlist.ForeColor = Color.Black;
-            btnAddNewSetlist.Location = new Point(195, 2);
+            btnAddNewSetlist.Location = new Point(192, 2);
             btnAddNewSetlist.Name = "btnAddNewSetlist";
             btnAddNewSetlist.Size = new Size(100, 23);
             btnAddNewSetlist.TabIndex = 15;
@@ -533,9 +564,9 @@
             panel3.Controls.Add(btnDeleteSetlist);
             panel3.Controls.Add(txtSetlistName);
             panel3.Controls.Add(label13);
-            panel3.Location = new Point(4, 575);
+            panel3.Location = new Point(4, 565);
             panel3.Name = "panel3";
-            panel3.Size = new Size(292, 130);
+            panel3.Size = new Size(289, 130);
             panel3.TabIndex = 13;
             // 
             // btnSaveSetlist
@@ -544,7 +575,7 @@
             btnSaveSetlist.Cursor = Cursors.Hand;
             btnSaveSetlist.Font = new Font("Segoe UI", 12F);
             btnSaveSetlist.ForeColor = Color.Black;
-            btnSaveSetlist.Location = new Point(193, 76);
+            btnSaveSetlist.Location = new Point(190, 76);
             btnSaveSetlist.Name = "btnSaveSetlist";
             btnSaveSetlist.Size = new Size(84, 36);
             btnSaveSetlist.TabIndex = 16;
@@ -573,7 +604,7 @@
             txtSetlistName.Location = new Point(13, 35);
             txtSetlistName.MaxLength = 50;
             txtSetlistName.Name = "txtSetlistName";
-            txtSetlistName.Size = new Size(266, 29);
+            txtSetlistName.Size = new Size(263, 29);
             txtSetlistName.TabIndex = 8;
             // 
             // label13
@@ -607,7 +638,7 @@
             lbSetlists.IntegralHeight = false;
             lbSetlists.Location = new Point(3, 27);
             lbSetlists.Name = "lbSetlists";
-            lbSetlists.Size = new Size(292, 542);
+            lbSetlists.Size = new Size(289, 532);
             lbSetlists.TabIndex = 0;
             lbSetlists.SelectedIndexChanged += lbSetlists_SelectedIndexChanged;
             lbSetlists.DoubleClick += lbSetlists_DoubleClick;
@@ -634,8 +665,8 @@
             splitContainer2.Panel2.Controls.Add(txtSavedLyrics);
             splitContainer2.Panel2.Controls.Add(btnSaveSong);
             splitContainer2.Panel2.Controls.Add(label12);
-            splitContainer2.Size = new Size(1018, 708);
-            splitContainer2.SplitterDistance = 324;
+            splitContainer2.Size = new Size(1009, 698);
+            splitContainer2.SplitterDistance = 321;
             splitContainer2.SplitterWidth = 9;
             splitContainer2.TabIndex = 0;
             // 
@@ -645,7 +676,7 @@
             btnSaveSetlistSongs.Cursor = Cursors.Hand;
             btnSaveSetlistSongs.Font = new Font("Segoe UI", 12F);
             btnSaveSetlistSongs.ForeColor = Color.Black;
-            btnSaveSetlistSongs.Location = new Point(228, 669);
+            btnSaveSetlistSongs.Location = new Point(225, 659);
             btnSaveSetlistSongs.Name = "btnSaveSetlistSongs";
             btnSaveSetlistSongs.Size = new Size(92, 36);
             btnSaveSetlistSongs.TabIndex = 22;
@@ -661,7 +692,7 @@
             txtSongFilter.MaxLength = 444;
             txtSongFilter.Name = "txtSongFilter";
             txtSongFilter.PlaceholderText = "Filter by Title or Artist";
-            txtSongFilter.Size = new Size(117, 22);
+            txtSongFilter.Size = new Size(114, 22);
             txtSongFilter.TabIndex = 21;
             txtSongFilter.TextChanged += txtSongFilter_TextChanged;
             // 
@@ -698,9 +729,9 @@
             btnDeleteSetlistSongs.Cursor = Cursors.Hand;
             btnDeleteSetlistSongs.Font = new Font("Segoe UI", 12F);
             btnDeleteSetlistSongs.ForeColor = Color.White;
-            btnDeleteSetlistSongs.Location = new Point(3, 669);
+            btnDeleteSetlistSongs.Location = new Point(3, 659);
             btnDeleteSetlistSongs.Name = "btnDeleteSetlistSongs";
-            btnDeleteSetlistSongs.Size = new Size(92, 36);
+            btnDeleteSetlistSongs.Size = new Size(89, 36);
             btnDeleteSetlistSongs.TabIndex = 18;
             btnDeleteSetlistSongs.Text = "Delete";
             btnDeleteSetlistSongs.UseVisualStyleBackColor = false;
@@ -717,7 +748,7 @@
             lbSongs.IntegralHeight = false;
             lbSongs.Location = new Point(3, 27);
             lbSongs.Name = "lbSongs";
-            lbSongs.Size = new Size(318, 636);
+            lbSongs.Size = new Size(315, 626);
             lbSongs.TabIndex = 14;
             lbSongs.SelectedIndexChanged += lbSongs_SelectedIndexChanged;
             lbSongs.DragDrop += lbSongs_DragDrop;
@@ -748,7 +779,7 @@
             txtSavedLyrics.Multiline = true;
             txtSavedLyrics.Name = "txtSavedLyrics";
             txtSavedLyrics.ScrollBars = ScrollBars.Both;
-            txtSavedLyrics.Size = new Size(674, 678);
+            txtSavedLyrics.Size = new Size(653, 668);
             txtSavedLyrics.TabIndex = 18;
             txtSavedLyrics.WordWrap = false;
             txtSavedLyrics.TextChanged += txtSavedLyrics_TextChanged;
@@ -759,7 +790,7 @@
             btnSaveSong.Cursor = Cursors.Hand;
             btnSaveSong.Font = new Font("Segoe UI", 9F);
             btnSaveSong.ForeColor = Color.Black;
-            btnSaveSong.Location = new Point(577, 0);
+            btnSaveSong.Location = new Point(556, 0);
             btnSaveSong.Name = "btnSaveSong";
             btnSaveSong.Size = new Size(100, 23);
             btnSaveSong.TabIndex = 17;
@@ -788,7 +819,7 @@
             txtChordProSongsFolder2.Name = "txtChordProSongsFolder2";
             txtChordProSongsFolder2.PlaceholderText = "3";
             txtChordProSongsFolder2.ReadOnly = true;
-            txtChordProSongsFolder2.Size = new Size(1239, 29);
+            txtChordProSongsFolder2.Size = new Size(1174, 29);
             txtChordProSongsFolder2.TabIndex = 10;
             txtChordProSongsFolder2.Text = "G:\\My Drive\\musician\\LivePrompter2";
             // 
@@ -810,7 +841,7 @@
             tabLyricsToChordPro.Location = new Point(4, 24);
             tabLyricsToChordPro.Name = "tabLyricsToChordPro";
             tabLyricsToChordPro.Padding = new Padding(3);
-            tabLyricsToChordPro.Size = new Size(1332, 784);
+            tabLyricsToChordPro.Size = new Size(1320, 774);
             tabLyricsToChordPro.TabIndex = 0;
             tabLyricsToChordPro.Text = "Lyrics To ChordPro";
             // 
@@ -831,10 +862,23 @@
             // splitMain.Panel2
             // 
             splitMain.Panel2.Controls.Add(splitChild);
-            splitMain.Size = new Size(1326, 778);
-            splitMain.SplitterDistance = 440;
+            splitMain.Size = new Size(1314, 768);
+            splitMain.SplitterDistance = 436;
             splitMain.SplitterWidth = 9;
             splitMain.TabIndex = 17;
+            // 
+            // btnPasteTemplate
+            // 
+            btnPasteTemplate.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnPasteTemplate.Cursor = Cursors.Hand;
+            btnPasteTemplate.Font = new Font("Segoe UI", 10F);
+            btnPasteTemplate.Location = new Point(139, 5);
+            btnPasteTemplate.Name = "btnPasteTemplate";
+            btnPasteTemplate.Size = new Size(119, 33);
+            btnPasteTemplate.TabIndex = 14;
+            btnPasteTemplate.Text = "&Paste Template";
+            btnPasteTemplate.UseVisualStyleBackColor = true;
+            btnPasteTemplate.Click += btnPasteTemplate_Click;
             // 
             // splitChild
             // 
@@ -857,8 +901,8 @@
             splitChild.Panel2.Controls.Add(panel1);
             splitChild.Panel2.Controls.Add(panel2);
             splitChild.Panel2.Controls.Add(btnWriteFile);
-            splitChild.Size = new Size(877, 778);
-            splitChild.SplitterDistance = 543;
+            splitChild.Size = new Size(869, 768);
+            splitChild.SplitterDistance = 538;
             splitChild.SplitterWidth = 9;
             splitChild.TabIndex = 18;
             // 
@@ -867,7 +911,7 @@
             linkGenius.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             linkGenius.AutoSize = true;
             linkGenius.Font = new Font("Segoe UI", 12F);
-            linkGenius.Location = new Point(449, 15);
+            linkGenius.Location = new Point(444, 15);
             linkGenius.Name = "linkGenius";
             linkGenius.Size = new Size(91, 21);
             linkGenius.TabIndex = 16;
@@ -875,25 +919,12 @@
             linkGenius.Text = "Genius.com";
             linkGenius.LinkClicked += linkGenius_LinkClicked;
             // 
-            // btnPasteTemplate
-            // 
-            btnPasteTemplate.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnPasteTemplate.Cursor = Cursors.Hand;
-            btnPasteTemplate.Font = new Font("Segoe UI", 10F);
-            btnPasteTemplate.Location = new Point(143, 5);
-            btnPasteTemplate.Name = "btnPasteTemplate";
-            btnPasteTemplate.Size = new Size(119, 33);
-            btnPasteTemplate.TabIndex = 14;
-            btnPasteTemplate.Text = "&Paste Template";
-            btnPasteTemplate.UseVisualStyleBackColor = true;
-            btnPasteTemplate.Click += btnPasteTemplate_Click;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
-            ClientSize = new Size(1364, 836);
+            ClientSize = new Size(1352, 826);
             Controls.Add(tabControl1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
@@ -994,5 +1025,7 @@
         private Button btnSaveSetlistSongs;
         private Button btnRefreshFiles;
         private Button btnPasteTemplate;
+        private Button btnBrowseFolderLyrics;
+        private Button btnBrowseFolderUtils;
     }
 }

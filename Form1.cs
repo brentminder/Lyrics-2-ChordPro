@@ -1,4 +1,5 @@
 using Microsoft.Win32;
+using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Runtime.InteropServices;
@@ -1279,6 +1280,35 @@ namespace Lyrics_2_ChordPro
             }
         }
 
+        private void btnBrowseFolderUtils_Click(object sender, EventArgs e) {
+            OpenFileExplorer(txtChordProSongsFolder2.Text);
+        }
 
+        private void btnBrowseFolderLyrics_Click(object sender, EventArgs e) {
+            OpenFileExplorer(txtChordProSongsFolder.Text);
+        }
+
+        private void OpenFileExplorer(string path) {
+            if (string.IsNullOrWhiteSpace(path)) {
+                MessageBox.Show("Please enter a valid folder path.", "Invalid Path", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!Directory.Exists(path)) {
+                MessageBox.Show($"The folder does not exist: {path}", "Folder Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try {
+                Process.Start(new ProcessStartInfo {
+                    FileName = "explorer.exe",
+                    Arguments = path,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex) {
+                MessageBox.Show($"Error opening folder: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }
