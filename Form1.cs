@@ -38,6 +38,7 @@ namespace Lyrics_2_ChordPro
             }
 
             txtOriginalLyrics.KeyDown += txtOriginalLyrics_KeyDown;
+            txtSavedLyrics.MouseWheel += txtSavedLyrics_MouseWheel;
 
             // load last used folder from registry
             LoadFolderFromRegistry();
@@ -157,6 +158,20 @@ namespace Lyrics_2_ChordPro
 
             e.SuppressKeyPress = true;
             e.Handled = true;
+        }
+
+        private void txtSavedLyrics_MouseWheel(object sender, MouseEventArgs e) {
+            if (!ModifierKeys.HasFlag(Keys.Control))
+                return;
+
+            var currentSize = txtSavedLyrics.Font.Size;
+            var newSize = e.Delta > 0 ? currentSize + 1 : currentSize - 1;
+
+            // Clamp font size between 6 and 72 points
+            newSize = Math.Max(6f, Math.Min(72f, newSize));
+
+            txtSavedLyrics.Font = new Font(txtSavedLyrics.Font.FontFamily, newSize);
+            ((HandledMouseEventArgs)e).Handled = true;
         }
 
         private static string NormalizeNewLines(string text) {
